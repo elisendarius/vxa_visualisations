@@ -94,28 +94,52 @@
       font-weight: 500;
       letter-spacing: 0.4px;
     }
-    .callouts {
-      display: flex;
-      gap: 1.2rem;
-      margin-top: 1.8rem;
-      width: 100%;
-      max-width: 660px;
-      flex-wrap: wrap;
-    }
-    .callout {
-      flex: 1 1 250px;
-      background: var(--card);
-      border-radius: 14px;
-      padding: 1.2rem 1.4rem;
-      border-top: 4px solid transparent;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-    }
-    .callout.nav-card  { border-color: var(--nav); }
-    .callout.igen-card { border-color: var(--igenity); }
-    .callout h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
-    .callout.nav-card  h3 { color: var(--nav); }
-    .callout.igen-card h3 { color: var(--igenity); }
-    .callout p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+   /* --- two-column layout: figure left, cards right --- */
+.layout{
+  width: 100%;
+  max-width: 1100px;            /* wider than before */
+  display: grid;
+  grid-template-columns: minmax(520px, 660px) minmax(260px, 360px);
+  gap: 1.6rem;
+  align-items: start;
+}
+
+/* keep canvas sizing sane in the left column */
+.left-col .canvas-wrap{
+  max-width: 660px;
+  width: 100%;
+}
+
+/* cards column */
+.right-col{
+  width: 100%;
+}
+
+/* cards now stack vertically on the right */
+.callouts{
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 0;               /* remove top margin since it's beside canvas */
+  width: 100%;
+  max-width: none;
+  flex-wrap: nowrap;
+}
+
+/* ensure each card spans full right column */
+.callout{
+  flex: 0 0 auto;
+}
+
+/* responsive: stack everything on narrow screens */
+@media (max-width: 980px){
+  .layout{
+    grid-template-columns: 1fr;
+  }
+  .callouts{
+    margin-top: 1.8rem;        /* restore spacing when stacked */
+  }
+}
   </style>
 </head>
 <body>
