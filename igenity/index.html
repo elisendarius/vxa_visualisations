@@ -1,569 +1,555 @@
-<!DOCTYPE html>
+this style: <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>eliViz Projects</title>
+  <meta name="description" content="A simple project hub hosted on GitHub Pages."/>
 
-  <title>Igenity vs. NAV breeding values — a comparison</title>
-
-  <!-- Shared global design system -->
-  <link rel="stylesheet" href="../assets/style.css?v=2">
-
-  <!-- Heatmap-specific styles only -->
   <style>
+    :root{
+      --grey:#f0f1f3;
+      --grey-mid:#d8dce2;
+      --grey-dark:#6b7280;
+      --blue:#ddeef7;
+      --blue-mid:#a8d0e6;
+      --blue-deep:#3a7ea8;
+      --green:#d9efe4;
+      --green-mid:#a3d4bc;
+      --pink:#fce8ec;
+      --pink-mid:#f5bfca;
+      --text:#2a2d35;
+      --text-light:#5a5f6e;
+      --white:#ffffff;
+      --radius:16px;
 
-    main { padding: 2.2rem 0 2.8rem; }
+      --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      --font-serif: ui-serif, "Georgia", "Times New Roman", Times, serif;
 
-    /* Title + language row */
-    .topbar{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:1rem;
-      flex-wrap:wrap;
-      margin-bottom:1.2rem;
+      --shadow: 0 10px 34px rgba(0,0,0,0.08);
+      --shadow-soft: 0 2px 16px rgba(0,0,0,0.05);
     }
 
-    .titles{ flex:1 1 auto; min-width:260px; }
-
-    h1{
-      font-family:var(--font-serif);
-      font-size:clamp(1.6rem,3.5vw,2.3rem);
-      margin-bottom:.35rem;
-      font-weight:600;
-      letter-spacing:-0.2px;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family: var(--font-sans);
+      background:#f7f8fa;
+      color:var(--text);
+      overflow-x:hidden;
+      min-height: 100vh;
     }
 
-    .subtitle{
-      color:var(--muted);
+    /* Sticky header */
+    header{
+      position:sticky; top:0; z-index:100;
+      background:rgba(247,248,250,.88);
+      backdrop-filter: blur(12px);
+      border-bottom:1px solid var(--grey-mid);
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 1rem 1.5rem;
+      gap: 1rem;
+    }
+    .logo{
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      letter-spacing: -0.4px;
+      white-space: nowrap;
+    }
+    .logo span{color:var(--blue-deep)}
+    nav{display:flex; gap:.4rem; flex-wrap: wrap;}
+    nav a{
+      color: var(--text-light);
+      text-decoration:none;
       font-size:.92rem;
-      line-height:1.6;
-      max-width:80ch;
+      font-weight:600;
+      padding: .35rem .65rem;
+      border-radius: 999px;
+      transition: background .18s, color .18s;
+    }
+    nav a:hover{color:var(--blue-deep); background: var(--blue);}
+
+    /* Layout container: full-width feel but readable */
+    .wrap{
+      width: min(1100px, calc(100% - 3rem));
+      margin: 0 auto;
     }
 
-    /* Language switch */
-    .lang{
+    /* Hero */
+    .hero{
+      padding: 3.2rem 0 1.8rem;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::before,.hero::after{
+      content:'';
+      position:absolute;
+      border-radius:50%;
+      filter: blur(85px);
+      opacity:.55;
+      pointer-events:none;
+      z-index:0;
+    }
+    .hero::before{
+      width: 560px; height: 560px;
+      background: radial-gradient(circle, var(--blue) 0%, transparent 70%);
+      top:-260px; left:-180px;
+    }
+    .hero::after{
+      width: 460px; height: 460px;
+      background: radial-gradient(circle, var(--pink) 0%, transparent 70%);
+      top:-140px; right:-180px;
+    }
+    .blob-green{
+      position:absolute;
+      width: 360px; height: 360px;
+      border-radius:50%;
+      background: radial-gradient(circle, var(--green) 0%, transparent 70%);
+      filter: blur(75px);
+      opacity:.45;
+      top: 40px; left: 35%;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .hero-inner{
+      position:relative;
+      z-index:1;
+      padding: 0.8rem 0 0;
+    }
+
+    .pill{
+      display:inline-block;
+      background: var(--blue);
+      color: var(--blue-deep);
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      padding: .35rem 1rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+    h1{
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4.2vw, 3rem);
+      line-height:1.15;
+      letter-spacing: -0.5px;
+      margin-bottom: .85rem;
+    }
+    h1 em{font-style: italic; color: var(--blue-deep);}
+    .lead{
+      color: var(--text-light);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      max-width: 70ch;
+      margin-bottom: 1.2rem;
+    }
+
+    .meta-line{
+      color: var(--text-light);
+      font-size: .92rem;
+      line-height: 1.6;
+      margin-top: .2rem;
+    }
+    .meta-line a{
+      color: var(--blue-deep);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .meta-line a:hover{ text-decoration: underline; }
+
+    /* Projects section */
+    .section{
+      padding: 1.4rem 0 3.2rem;
+    }
+    .section-head{
       display:flex;
-      gap:.4rem;
-      background:var(--card);
-      border:1px solid var(--grey-mid);
-      border-radius:999px;
-      padding:.35rem;
-      box-shadow:var(--shadow-soft);
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .section-title{
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      letter-spacing: -0.3px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.1rem;
+    }
+
+    .proj{
+      background: var(--white);
+      border: 1px solid var(--grey-mid);
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: var(--shadow-soft);
+      transition: transform .18s, box-shadow .18s;
+      display:flex;
+      flex-direction: column;
+    }
+    .proj:hover{
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .proj-top{
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue-mid), var(--pink-mid), var(--green-mid));
+    }
+
+    .proj-body{
+      padding: 1.1rem 1.1rem 1rem;
+      display:flex;
+      flex-direction: column;
+      gap:.65rem;
+      height:100%;
+    }
+
+    .proj h3{
+      font-size: 1.05rem;
+      font-weight: 900;
+      letter-spacing: -0.2px;
+    }
+    .proj p{
+      color: var(--text-light);
+      font-size: .92rem;
+      line-height: 1.6;
+    }
+
+    .proj-actions{
+      margin-top: auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 1rem;
+      padding-top: .5rem;
+    }
+    .open{
+      display:inline-flex;
+      align-items:center;
+      gap:.55rem;
+      text-decoration:none;
+      font-weight: 900;
+      color: var(--blue-deep);
+      padding: .55rem .9rem;
+      border-radius: 999px;
+      background: var(--blue);
+      border: 1px solid var(--blue-mid);
+      transition: transform .15s, background .15s;
+      white-space: nowrap;
+    }
+    .open:hover{transform: translateY(-1px); background: #cfe6f3;}
+
+    .path{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: .78rem;
+      color: var(--text-light);
+      background: var(--grey);
+      border: 1px solid var(--grey-mid);
+      padding: .2rem .45rem;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+
+    footer{
+      text-align:center;
+      padding: 2rem 1rem;
+      color: var(--text-light);
+      font-size: .86rem;
+      border-top: 1px solid var(--grey-mid);
+      background: rgba(255,255,255,0.35);
+    }
+
+    @media (max-width: 680px){
+      header{padding: 1rem 1rem;}
+      .wrap{width: calc(100% - 2rem);}
+      .hero{padding-top: 2.6rem;}
+    }
+    .back-link{
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 999;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: .9rem;
+  color: #3a7ea8;
+  background: white;
+  border: 1px solid #d8dce2;
+  padding: .45rem .8rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+  transition: all .15s ease;
+}
+
+.back-link:hover{
+  background: #ddeef7;
+  transform: translateY(-1px);
+}
+  </style>
+</head> and this one: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Breed Correlation Heatmap</title>
+
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --card: #ffffff;
+      --text: #1e2128;
+      --muted: #6b7280;
+      --border: #e2e5ea;
+      --neg-strong: #c2526e;
+      --neutral:    #f0f1f3;
+      --pos-strong: #2d7a5c;
+      --radius: 14px;
+
+      --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      --font-serif: ui-serif, "Georgia", "Times New Roman", Times, serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      padding: 2.5rem 1.5rem;
+      min-height: 100vh;
+    }
+
+    /* ── Header row ── */
+    .topbar {
+      max-width: 1020px;
+      margin: 0 auto 1.2rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .titles { flex: 1 1 auto; min-width: 260px; }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.875rem;
+      margin-bottom: 0;
+      font-weight: 300;
+    }
+
+    .lang {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.35rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.04);
     }
     .lang button{
-      border:0;
-      background:transparent;
-      padding:.45rem .85rem;
-      border-radius:999px;
-      cursor:pointer;
-      font-size:.78rem;
-      font-weight:700;
-      color:var(--muted);
+      border: 0;
+      background: transparent;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      font-family: var(--font-sans);
     }
     .lang button.active{
-      background:var(--text);
-      color:white;
+      background: #1e2128;
+      color: #ffffff;
     }
 
-    /* Tabs */
-    .tabs{
-      display:flex;
-      gap:.5rem;
-      flex-wrap:wrap;
-      margin:1rem 0 1.8rem;
+    /* ── Group tabs ── */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
     }
-    .tab{
-      padding:.5rem 1.05rem;
-      border-radius:999px;
-      border:1.5px solid var(--grey-mid);
-      background:var(--card);
-      font-size:.82rem;
-      font-weight:700;
-      cursor:pointer;
-      color:var(--muted);
+    .tab {
+      padding: 0.45rem 1.1rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: var(--card);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.18s;
+      font-family: var(--font-sans);
+      appearance: none;
+      -webkit-appearance: none;
     }
-    .tab.active{
-      background:#2d7a5c;
-      border-color:#2d7a5c;
-      color:white;
+    .tab:hover { border-color: #a3d4bc; color: #2d7a5c; }
+    .tab.active { background: #2d7a5c; border-color: #2d7a5c; color: white; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      max-width: 1020px;
+      margin: 0 auto 2rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+      overflow-x: auto;
     }
 
-    /* Card container */
-    .card{
-      padding:1.6rem;
-      overflow-x:auto;
-      margin-bottom:1.25rem;
+    .group-title {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      margin-bottom: 1.2rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+    }
+    .group-title .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
     }
 
-    .group-title{
-      font-family:var(--font-serif);
-      font-size:1.05rem;
-      margin-bottom:1rem;
-      display:flex;
-      align-items:center;
-      gap:.6rem;
-      font-weight:600;
+    /* ── Heatmap table ── */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 4px;
+      min-width: 580px;
     }
 
-    table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:4px;
-      min-width:620px;
+    thead th {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-align: center;
+      padding: 0.4rem 0.3rem;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    thead th:first-child { text-align: left; min-width: 220px; }
+
+    .n-row td {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      text-align: center;
+      padding: 0.1rem 0.3rem 0.6rem;
+      white-space: nowrap;
+    }
+    .n-row td:first-child { text-align: left; padding-left: 0; font-size: 0.7rem; }
+
+    tbody tr:not(.n-row) td:first-child {
+      font-size: 0.8rem;
+      color: var(--text);
+      padding: 0.3rem 0.6rem 0.3rem 0;
+      line-height: 1.35;
+      font-weight: 400;
+      white-space: nowrap;
     }
 
-    thead th{
-      font-size:.78rem;
-      font-weight:800;
-      color:var(--muted);
-      text-align:center;
-      white-space:nowrap;
+    .cell {
+      border-radius: 8px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 400;
+      padding: 0.55rem 0.4rem;
+      cursor: default;
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+      user-select: none;
+      white-space: nowrap;
     }
-    thead th:first-child{
-      text-align:left;
-      min-width:240px;
-    }
-
-    .n-row td{
-      font-size:.72rem;
-      color:var(--muted);
-      font-family:var(--font-mono);
-      text-align:center;
-      white-space:nowrap;
-    }
-
-    tbody tr:not(.n-row) td:first-child{
-      font-size:.82rem;
-      font-weight:500;
-      white-space:nowrap;
+    .cell:hover {
+      transform: scale(1.12);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      z-index: 10;
     }
 
-    .cell{
-      border-radius:8px;
-      text-align:center;
-      font-family:var(--font-mono);
-      padding:.55rem .4rem;
-      transition:.15s;
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      margin-top: 1.8rem;
+      flex-wrap: wrap;
     }
-    .cell:hover{
-      transform:scale(1.12);
-      box-shadow:0 6px 18px rgba(0,0,0,0.14);
+    .legend-label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+    .legend-bar {
+      display: flex;
+      gap: 3px;
+      align-items: center;
     }
-
-    /* Legend */
-    .legend{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:.3rem;
-      margin-top:1.2rem;
-      flex-wrap:wrap;
-    }
-    .legend-label{
-      font-size:.75rem;
-      color:var(--muted);
-      font-weight:700;
-    }
-    .legend-swatch{
-      width:28px;
-      height:20px;
-      border-radius:6px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:.6rem;
-      font-family:var(--font-mono);
+    .legend-swatch {
+      width: 28px; height: 20px;
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6rem;
+      font-family: var(--font-mono);
     }
 
-    /* Tooltip */
-    .tooltip{
-      position:fixed;
-      background:#1e2128;
-      color:white;
-      padding:.5rem .9rem;
-      border-radius:10px;
-      font-size:.78rem;
-      pointer-events:none;
-      opacity:0;
-      transition:.15s;
-      z-index:2000;
-      box-shadow:0 18px 50px rgba(0,0,0,.18);
+    /* ── Tooltip ── */
+    .tooltip {
+      position: fixed;
+      background: #1e2128;
+      color: white;
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-family: var(--font-sans);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 999;
+      max-width: 260px;
+      line-height: 1.5;
     }
-    .tooltip.show{opacity:1}
+    .tooltip.show { opacity: 1; }
 
-    .panel{display:none}
-    .panel.active{display:block}
+    /* ── Panel animation ── */
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeUp 0.3s ease; }
+    @keyframes fadeUp { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
 
-    .source{
-      text-align:center;
-      font-size:.78rem;
-      color:var(--muted);
-      margin-top:.6rem;
-      font-weight:600;
+    .source {
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
     }
 
+    @media (max-width: 520px) {
+      body { padding: 2rem 1rem; }
+      .card { padding: 1.2rem; }
+      tbody tr:not(.n-row) td:first-child { white-space: normal; }
+      .topbar { justify-content: center; }
+    }
   </style>
-</head>
-
-<body>
-
-<!-- Shared site header -->
-<header class="site-header">
-  <div class="wrap header-inner">
-    <a class="logo" href="../">eli<span>Viz</span> Projects</a>
-    <a class="btn btn-soft" href="../">← Back to projects</a>
-  </div>
-</header>
-
-<section class="soft-blobs">
-  <div class="blob-green"></div>
-  <div class="layer-1">
-
-    <main class="wrap">
-
-      <!-- Title -->
-      <div class="topbar">
-        <div class="titles">
-          <h1 id="title">Igenity vs. NAV breeding values — a comparison</h1>
-          <p id="subtitle" class="subtitle">
-            Correlations across breeds and traits — hover cells for details
-          </p>
-        </div>
-
-        <div class="lang">
-          <button id="btn-en" class="active">EN</button>
-          <button id="btn-sv">SV</button>
-        </div>
-      </div>
-
-      <!-- Tabs -->
-      <div class="tabs">
-        <button class="tab active" data-key="bw">Birth Weight</button>
-        <button class="tab" data-key="ww">Weaning Weight</button>
-        <button class="tab" data-key="yw">Yearling Weight</button>
-        <button class="tab" data-key="adg">Daily Gain</button>
-        <button class="tab" data-key="all">All traits</button>
-      </div>
-
-      <!-- Content -->
-      <div id="tooltip" class="tooltip"></div>
-
-      <div id="panel-bw" class="panel active"><div class="card" id="card-bw"></div></div>
-      <div id="panel-ww" class="panel"><div class="card" id="card-ww"></div></div>
-      <div id="panel-yw" class="panel"><div class="card" id="card-yw"></div></div>
-      <div id="panel-adg" class="panel"><div class="card" id="card-adg"></div></div>
-      <div id="panel-all" class="panel"><div class="card" id="card-all"></div></div>
-
-      <div class="legend">
-        <span class="legend-label">−1.0</span>
-        <div id="legend-bar"></div>
-        <span class="legend-label">+1.0</span>
-      </div>
-
-      <p class="source" id="source">n = number of animals per breed</p>
-
-  <script>
-  // ===== i18n strings =====
-  const i18n = {
-    en: {
-      title: "Breed × Trait Correlations",
-      subtitle: "Genomic prediction accuracy across breeds — hover cells for details",
-      tabs: { bw:"Birth Weight", ww:"Weaning Weight", yw:"Yearling Weight", adg:"Daily Gain (ADG)", all:"All traits" },
-      table: { pair:"Correlation pair", n:"n =", rPrefix:"r = " },
-      source: "n = number of animals per breed",
-      tooltip: { breedLabel: "", pairLabel: "", rLabel: "r = " },
-      groups: {
-        bw: "Birth Weight",
-        ww: "Weaning Weight (200-day)",
-        yw: "Yearling Weight (365-day)",
-        adg:"Average Daily Gain"
-      },
-      rows: {
-        bw: [
-          "Igenity EBV ↔ fvD NAV",
-          "Igenity EBV ↔ Corrected BW",
-          "fvD NAV ↔ Corrected BW"
-        ],
-        ww: [
-          "Igenity EBV ↔ 200D NAV",
-          "Igenity EBV ↔ Corrected WW",
-          "200D NAV ↔ Corrected WW"
-        ],
-        yw: [
-          "Igenity EBV ↔ 365vD NAV",
-          "Igenity EBV ↔ Corrected YW",
-          "365vD NAV ↔ Corrected YW"
-        ],
-        adg: [
-          "Igenity EBV ↔ 365t NAV",
-          "Igenity EBV ↔ Corrected ADG",
-          "365t NAV ↔ Corrected ADG"
-        ]
-      }
-    },
-    sv: {
-      title: "Korrelationer mellan ras × egenskap",
-      subtitle: "Noggrannhet i genomisk prediktion mellan raser — hovra över celler för detaljer",
-      tabs: { bw:"Födelsevikt", ww:"Avvänjningsvikt", yw:"Årsvikt", adg:"Daglig tillväxt (ADG)", all:"Alla egenskaper" },
-      table: { pair:"Korrelationspar", n:"n =", rPrefix:"r = " },
-      source: "n = antal djur per ras",
-      tooltip: { breedLabel: "", pairLabel: "", rLabel: "r = " },
-      groups: {
-        bw: "Födelsevikt",
-        ww: "Avvänjningsvikt (200 dagar)",
-        yw: "Årsvikt (365 dagar)",
-        adg:"Genomsnittlig daglig tillväxt"
-      },
-      rows: {
-        bw: [
-          "Igenity EBV ↔ fvD NAV",
-          "Igenity EBV ↔ Korrigerad BW",
-          "fvD NAV ↔ Korrigerad BW"
-        ],
-        ww: [
-          "Igenity EBV ↔ 200D NAV",
-          "Igenity EBV ↔ Korrigerad WW",
-          "200D NAV ↔ Korrigerad WW"
-        ],
-        yw: [
-          "Igenity EBV ↔ 365vD NAV",
-          "Igenity EBV ↔ Korrigerad YW",
-          "365vD NAV ↔ Korrigerad YW"
-        ],
-        adg: [
-          "Igenity EBV ↔ 365t NAV",
-          "Igenity EBV ↔ Korrigerad ADG",
-          "365t NAV ↔ Korrigerad ADG"
-        ]
-      }
-    }
-  };
-
-  // ===== Data (language-independent) =====
-  const breeds = ['Angus','Blonde','Charolais','Hereford','Limousin','Simmental'];
-  const nMain  = [14,9,77,32,14,37];
-  const nSub   = [14,8,74,32,13,36];
-
-  const groups = {
-    bw: {
-      dot: '#3a7ea8',
-      n: nMain,
-      rows: [
-        { key:'bw', idx:0, vals:[0.07,0.52,0.06,0.58,0.31,0.34] },
-        { key:'bw', idx:1, vals:[0.20,0.32,0.00,-0.02,0.18,0.28] },
-        { key:'bw', idx:2, vals:[0.88,0.20,0.39,0.11,0.47,0.44] },
-      ]
-    },
-    ww: {
-      dot: '#3a8a65',
-      n: nMain,
-      rows: [
-        { key:'ww', idx:0, vals:[-0.07,0.08,0.00,0.28,0.45,0.07] },
-        { key:'ww', idx:1, vals:[0.42,-0.35,0.06,0.16,0.62,0.22] },
-        { key:'ww', idx:2, vals:[0.45,0.71,0.62,0.16,0.18,0.55] },
-      ]
-    },
-    yw: {
-      dot: '#c2526e',
-      n: nSub,
-      rows: [
-        { key:'yw', idx:0, vals:[-0.03,-0.19,0.00,0.53,0.23,0.02] },
-        { key:'yw', idx:1, vals:[0.61,-0.58,0.23,0.42,0.52,0.14] },
-        { key:'yw', idx:2, vals:[0.54,0.46,0.44,0.48,0.42,0.53] },
-      ]
-    },
-    adg: {
-      dot: '#7a3aaa',
-      n: nSub,
-      rows: [
-        { key:'adg', idx:0, vals:[-0.04,-0.62,-0.02,0.39,-0.14,0.21] },
-        { key:'adg', idx:1, vals:[0.20,0.53,0.18,0.35,-0.17,0.15] },
-        { key:'adg', idx:2, vals:[0.43,-0.01,0.18,0.54,0.53,0.35] },
-      ]
-    }
-  };
-
-  // ===== Rendering + behavior =====
-  let currentLang = 'en';
-
-  function lerpColor(a, b, t) {
-    const ah = parseInt(a.slice(1), 16), bh = parseInt(b.slice(1), 16);
-    const ar = ah >> 16, ag = (ah >> 8) & 0xff, ab = ah & 0xff;
-    const br = bh >> 16, bg = (bh >> 8) & 0xff, bb = bh & 0xff;
-    return `rgb(${Math.round(ar + (br - ar) * t)},${Math.round(ag + (bg - ag) * t)},${Math.round(ab + (bb - ab) * t)})`;
-  }
-
-  function corrColor(v) {
-    if (v === null || Number.isNaN(v)) return '#eee';
-    const clamp = Math.max(-1, Math.min(1, v));
-    const neutral = getComputedStyle(document.documentElement).getPropertyValue('--neutral').trim() || '#f0f1f3';
-    if (clamp < 0) return lerpColor(neutral, '#c2526e', -clamp);
-    return lerpColor(neutral, '#2d7a5c', clamp);
-  }
-
-  function textColor(v) {
-    if (v === null || Number.isNaN(v)) return '#999';
-    return Math.abs(v) > 0.45 ? 'white' : '#2a2d35';
-  }
-
-  function buildTable(key, data, container) {
-    const T = i18n[currentLang];
-    const groupLabel = T.groups[key];
-    const rowsText = T.rows[key];
-
-    const html = `
-      <div class="group-title">
-        <span class="dot" style="background:${data.dot}"></span>
-        ${groupLabel}
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>${T.table.pair}</th>
-            ${breeds.map(b => `<th>${b}</th>`).join('')}
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="n-row">
-            <td>${T.table.n}</td>
-            ${data.n.map(n => `<td>${n}</td>`).join('')}
-          </tr>
-          ${data.rows.map((row) => `
-            <tr>
-              <td>${rowsText[row.idx]}</td>
-              ${row.vals.map((v, i) => {
-                const bg = corrColor(v);
-                const tc = textColor(v);
-                const sign = v > 0 ? '+' : '';
-                const label = rowsText[row.idx];
-                return `<td class="cell"
-                  style="background:${bg}; color:${tc}"
-                  data-breed="${breeds[i]}"
-                  data-label="${label}"
-                  data-val="${v}"
-                >${sign}${Number(v).toFixed(2)}</td>`;
-              }).join('')}
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-    container.innerHTML = html;
-  }
-
-  function buildAll(container) {
-    container.innerHTML = '';
-    Object.keys(groups).forEach(key => {
-      const div = document.createElement('div');
-      div.style.marginBottom = '2rem';
-      buildTable(key, groups[key], div);
-      container.appendChild(div);
-    });
-  }
-
-  // Legend
-  function buildLegend() {
-    const bar = document.getElementById('legend-bar');
-    bar.innerHTML = '';
-    const steps = [-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75,1];
-    steps.forEach(v => {
-      const sw = document.createElement('div');
-      sw.className = 'legend-swatch';
-      sw.style.background = corrColor(v);
-      sw.style.color = textColor(v);
-      sw.textContent = v === 0 ? '0' : '';
-      bar.appendChild(sw);
-    });
-  }
-
-  // Tooltip (event delegation)
-  const tip = document.getElementById('tooltip');
-
-  function showTip(el, clientX, clientY) {
-    const T = i18n[currentLang];
-    tip.innerHTML = `<strong>${el.dataset.breed}</strong><br>${el.dataset.label}<br>${T.tooltip.rLabel}${el.dataset.val}`;
-    tip.classList.add('show');
-    tip.setAttribute('aria-hidden', 'false');
-    moveTip(clientX, clientY);
-  }
-
-  function moveTip(clientX, clientY) {
-    tip.style.left = (clientX + 14) + 'px';
-    tip.style.top  = (clientY - 36) + 'px';
-  }
-  function hideTip() {
-    tip.classList.remove('show');
-    tip.setAttribute('aria-hidden', 'true');
-  }
-
-  document.addEventListener('mousemove', (e) => {
-    if (tip.classList.contains('show')) moveTip(e.clientX, e.clientY);
-  });
-
-  document.addEventListener('mouseover', (e) => {
-    const cell = e.target.closest('.cell');
-    if (!cell) return;
-    showTip(cell, e.clientX, e.clientY);
-  });
-
-  document.addEventListener('mouseout', (e) => {
-    const fromCell = e.target.closest('.cell');
-    const toCell = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest('.cell') : null;
-    if (fromCell && !toCell) hideTip();
-  });
-
-  // Tabs
-  function showPanel(key) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(`panel-${key}`).classList.add('active');
-    document.querySelector(`.tab[data-key="${key}"]`).classList.add('active');
-    hideTip();
-  }
-
-  document.querySelectorAll('.tab').forEach(btn => {
-    btn.addEventListener('click', () => showPanel(btn.dataset.key));
-  });
-
-  // Language switching
-  function setLang(lang) {
-    currentLang = (lang === 'sv') ? 'sv' : 'en';
-
-    // Toggle buttons
-    document.getElementById('btn-en').classList.toggle('active', currentLang === 'en');
-    document.getElementById('btn-sv').classList.toggle('active', currentLang === 'sv');
-
-    // Update UI text
-    const T = i18n[currentLang];
-    document.getElementById('title').textContent = T.title;
-    document.getElementById('subtitle').textContent = T.subtitle;
-    document.getElementById('tab-bw').textContent = T.tabs.bw;
-    document.getElementById('tab-ww').textContent = T.tabs.ww;
-    document.getElementById('tab-yw').textContent = T.tabs.yw;
-    document.getElementById('tab-adg').textContent = T.tabs.adg;
-    document.getElementById('tab-all').textContent = T.tabs.all;
-    document.getElementById('source').textContent = T.source;
-
-    // Re-render tables so labels switch language
-    Object.keys(groups).forEach(key => buildTable(key, groups[key], document.getElementById(`card-${key}`)));
-    buildAll(document.getElementById('card-all'));
-    buildLegend();
-    hideTip();
-
-    // Update <html lang="">
-    document.documentElement.setAttribute('lang', currentLang);
-  }
-
-  document.getElementById('btn-en').addEventListener('click', () => setLang('en'));
-  document.getElementById('btn-sv').addEventListener('click', () => setLang('sv'));
-
-  // Initial render
-  Object.keys(groups).forEach(key => buildTable(key, groups[key], document.getElementById(`card-${key}`)));
-  buildAll(document.getElementById('card-all'));
-  buildLegend();
-  setLang('en');
-</script>
-
-</body>
-</html>
+</head> are very different make a style that is consistent across my main page and the projects
