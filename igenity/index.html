@@ -3,49 +3,267 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Breed Correlation Heatmap</title>
-// ===== Styles ======//
+
+  <title>Igenity vs. NAV breeding values — a comparison</title>
+
+  <!-- Shared global design system -->
   <link rel="stylesheet" href="../assets/styles.css">
+
+  <!-- Heatmap-specific styles only -->
+  <style>
+
+    main { padding: 2.2rem 0 2.8rem; }
+
+    /* Title + language row */
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:1rem;
+      flex-wrap:wrap;
+      margin-bottom:1.2rem;
+    }
+
+    .titles{ flex:1 1 auto; min-width:260px; }
+
+    h1{
+      font-family:var(--font-serif);
+      font-size:clamp(1.6rem,3.5vw,2.3rem);
+      margin-bottom:.35rem;
+      font-weight:600;
+      letter-spacing:-0.2px;
+    }
+
+    .subtitle{
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.6;
+      max-width:80ch;
+    }
+
+    /* Language switch */
+    .lang{
+      display:flex;
+      gap:.4rem;
+      background:var(--card);
+      border:1px solid var(--grey-mid);
+      border-radius:999px;
+      padding:.35rem;
+      box-shadow:var(--shadow-soft);
+    }
+    .lang button{
+      border:0;
+      background:transparent;
+      padding:.45rem .85rem;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:.78rem;
+      font-weight:700;
+      color:var(--muted);
+    }
+    .lang button.active{
+      background:var(--text);
+      color:white;
+    }
+
+    /* Tabs */
+    .tabs{
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+      margin:1rem 0 1.8rem;
+    }
+    .tab{
+      padding:.5rem 1.05rem;
+      border-radius:999px;
+      border:1.5px solid var(--grey-mid);
+      background:var(--card);
+      font-size:.82rem;
+      font-weight:700;
+      cursor:pointer;
+      color:var(--muted);
+    }
+    .tab.active{
+      background:#2d7a5c;
+      border-color:#2d7a5c;
+      color:white;
+    }
+
+    /* Card container */
+    .card{
+      padding:1.6rem;
+      overflow-x:auto;
+      margin-bottom:1.25rem;
+    }
+
+    .group-title{
+      font-family:var(--font-serif);
+      font-size:1.05rem;
+      margin-bottom:1rem;
+      display:flex;
+      align-items:center;
+      gap:.6rem;
+      font-weight:600;
+    }
+
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:4px;
+      min-width:620px;
+    }
+
+    thead th{
+      font-size:.78rem;
+      font-weight:800;
+      color:var(--muted);
+      text-align:center;
+      white-space:nowrap;
+    }
+    thead th:first-child{
+      text-align:left;
+      min-width:240px;
+    }
+
+    .n-row td{
+      font-size:.72rem;
+      color:var(--muted);
+      font-family:var(--font-mono);
+      text-align:center;
+      white-space:nowrap;
+    }
+
+    tbody tr:not(.n-row) td:first-child{
+      font-size:.82rem;
+      font-weight:500;
+      white-space:nowrap;
+    }
+
+    .cell{
+      border-radius:8px;
+      text-align:center;
+      font-family:var(--font-mono);
+      padding:.55rem .4rem;
+      transition:.15s;
+    }
+    .cell:hover{
+      transform:scale(1.12);
+      box-shadow:0 6px 18px rgba(0,0,0,0.14);
+    }
+
+    /* Legend */
+    .legend{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:.3rem;
+      margin-top:1.2rem;
+      flex-wrap:wrap;
+    }
+    .legend-label{
+      font-size:.75rem;
+      color:var(--muted);
+      font-weight:700;
+    }
+    .legend-swatch{
+      width:28px;
+      height:20px;
+      border-radius:6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.6rem;
+      font-family:var(--font-mono);
+    }
+
+    /* Tooltip */
+    .tooltip{
+      position:fixed;
+      background:#1e2128;
+      color:white;
+      padding:.5rem .9rem;
+      border-radius:10px;
+      font-size:.78rem;
+      pointer-events:none;
+      opacity:0;
+      transition:.15s;
+      z-index:2000;
+      box-shadow:0 18px 50px rgba(0,0,0,.18);
+    }
+    .tooltip.show{opacity:1}
+
+    .panel{display:none}
+    .panel.active{display:block}
+
+    .source{
+      text-align:center;
+      font-size:.78rem;
+      color:var(--muted);
+      margin-top:.6rem;
+      font-weight:600;
+    }
+
+  </style>
 </head>
+
 <body>
-<a href="../" class="back-link">← Back to projects</a>
-<div class="topbar">
-  <div class="titles">
-    <h1 id="title">Breed × Trait Correlations</h1>
-    <p id="subtitle" class="subtitle">Genomic prediction accuracy across breeds — hover cells for details</p>
+
+<!-- Shared site header -->
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="../">eli<span>Viz</span> Projects</a>
+    <a class="btn btn-soft" href="../">← Back to projects</a>
   </div>
+</header>
 
-  <div class="lang" role="group" aria-label="Language toggle">
-    <button type="button" id="btn-en" class="active" data-lang="en">EN</button>
-    <button type="button" id="btn-sv" data-lang="sv">SV</button>
-  </div>
-</div>
+<section class="soft-blobs">
+  <div class="blob-green"></div>
+  <div class="layer-1">
 
-<div class="tabs">
-  <button type="button" class="tab active" data-key="bw" id="tab-bw">Birth Weight</button>
-  <button type="button" class="tab" data-key="ww" id="tab-ww">Weaning Weight</button>
-  <button type="button" class="tab" data-key="yw" id="tab-yw">Yearling Weight</button>
-  <button type="button" class="tab" data-key="adg" id="tab-adg">Daily Gain (ADG)</button>
-  <button type="button" class="tab" data-key="all" id="tab-all">All traits</button>
-</div>
+    <main class="wrap">
 
-<div id="tooltip" class="tooltip" aria-hidden="true"></div>
+      <!-- Title -->
+      <div class="topbar">
+        <div class="titles">
+          <h1 id="title">Igenity vs. NAV breeding values — a comparison</h1>
+          <p id="subtitle" class="subtitle">
+            Correlations across breeds and traits — hover cells for details
+          </p>
+        </div>
 
-<div id="panel-bw" class="panel active"><div class="card" id="card-bw"></div></div>
-<div id="panel-ww" class="panel"><div class="card" id="card-ww"></div></div>
-<div id="panel-yw" class="panel"><div class="card" id="card-yw"></div></div>
-<div id="panel-adg" class="panel"><div class="card" id="card-adg"></div></div>
-<div id="panel-all" class="panel"><div class="card" id="card-all"></div></div>
+        <div class="lang">
+          <button id="btn-en" class="active">EN</button>
+          <button id="btn-sv">SV</button>
+        </div>
+      </div>
 
-<!-- Legend -->
-<div class="legend" aria-label="Correlation legend">
-  <span class="legend-label">−1.0</span>
-  <div class="legend-bar" id="legend-bar"></div>
-  <span class="legend-label">+1.0</span>
-</div>
-<p class="source" id="source">n = number of animals per breed</p>
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" data-key="bw">Birth Weight</button>
+        <button class="tab" data-key="ww">Weaning Weight</button>
+        <button class="tab" data-key="yw">Yearling Weight</button>
+        <button class="tab" data-key="adg">Daily Gain</button>
+        <button class="tab" data-key="all">All traits</button>
+      </div>
 
-<script>
+      <!-- Content -->
+      <div id="tooltip" class="tooltip"></div>
+
+      <div id="panel-bw" class="panel active"><div class="card" id="card-bw"></div></div>
+      <div id="panel-ww" class="panel"><div class="card" id="card-ww"></div></div>
+      <div id="panel-yw" class="panel"><div class="card" id="card-yw"></div></div>
+      <div id="panel-adg" class="panel"><div class="card" id="card-adg"></div></div>
+      <div id="panel-all" class="panel"><div class="card" id="card-all"></div></div>
+
+      <div class="legend">
+        <span class="legend-label">−1.0</span>
+        <div id="legend-bar"></div>
+        <span class="legend-label">+1.0</span>
+      </div>
+
+      <p class="source" id="source">n = number of animals per breed</p>
+
+  <script>
   // ===== i18n strings =====
   const i18n = {
     en: {
