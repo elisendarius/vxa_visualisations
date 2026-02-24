@@ -202,7 +202,12 @@
       height: 4px;
       background: linear-gradient(90deg, var(--blue-mid), var(--pink-mid), var(--green-mid));
     }
-
+   .proj-top img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;      /* crops nicely */
+    display: block;
+    }
     .proj-body{
       padding: 1.1rem 1.1rem 1rem;
       display:flex;
@@ -333,7 +338,23 @@
             </div>
           </div>
         </article>
-        
+
+        <article class="proj">
+          <div class="proj-top">
+           <img src="assets/nav_vs_igenity_circular_journey.gif" alt="Igenity vs NAV simulation preview">
+         </div>
+
+        <div class="proj-body">
+          <h3>Igenity vs. NAV Breeding goal</h3>
+          <p>
+            Simulated genetic progress towards breeding goal of NAV vs Igenity.
+          </p>
+        <div class="proj-actions">
+        <a class="open" href="assets/">Open →</a>
+        <span class="path">assets/</span>
+    </div>
+  </div>
+</article>
 
         <!-- Add more projects by duplicating this card -->
         <!--
