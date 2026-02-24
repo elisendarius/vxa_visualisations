@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>eliViz Projects</title>
-  <meta name="description" content="A clean project hub for eliViz Design — browse tools and visualizations."/>
+  <meta name="description" content="A simple project hub hosted on GitHub Pages."/>
 
   <style>
     :root{
@@ -16,19 +16,18 @@
       --blue-deep:#3a7ea8;
       --green:#d9efe4;
       --green-mid:#a3d4bc;
-      --green-deep:#3a8a65;
       --pink:#fce8ec;
       --pink-mid:#f5bfca;
-      --pink-deep:#c2526e;
       --text:#2a2d35;
       --text-light:#5a5f6e;
       --white:#ffffff;
       --radius:16px;
-      --radius-sm:10px;
 
       --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
       --font-serif: ui-serif, "Georgia", "Times New Roman", Times, serif;
-      --shadow: 0 10px 38px rgba(0,0,0,0.08);
+
+      --shadow: 0 10px 34px rgba(0,0,0,0.08);
+      --shadow-soft: 0 2px 16px rgba(0,0,0,0.05);
     }
 
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -38,16 +37,17 @@
       background:#f7f8fa;
       color:var(--text);
       overflow-x:hidden;
+      min-height: 100vh;
     }
 
-    /* ── Sticky header ── */
+    /* Sticky header */
     header{
       position:sticky; top:0; z-index:100;
-      background:rgba(247,248,250,.85);
+      background:rgba(247,248,250,.88);
       backdrop-filter: blur(12px);
       border-bottom:1px solid var(--grey-mid);
       display:flex; align-items:center; justify-content:space-between;
-      padding: 1rem 2.2rem;
+      padding: 1rem 1.5rem;
       gap: 1rem;
     }
     .logo{
@@ -57,28 +57,27 @@
       white-space: nowrap;
     }
     .logo span{color:var(--blue-deep)}
-    nav{
-      display:flex; align-items:center; gap: 1rem; flex-wrap: wrap;
-      justify-content:flex-end;
-    }
+    nav{display:flex; gap:.4rem; flex-wrap: wrap;}
     nav a{
       color: var(--text-light);
       text-decoration:none;
       font-size:.92rem;
       font-weight:600;
-      padding: .35rem .6rem;
+      padding: .35rem .65rem;
       border-radius: 999px;
       transition: background .18s, color .18s;
     }
     nav a:hover{color:var(--blue-deep); background: var(--blue);}
 
-    /* ── Hero ── */
+    /* Layout container: full-width feel but readable */
+    .wrap{
+      width: min(1100px, calc(100% - 3rem));
+      margin: 0 auto;
+    }
+
+    /* Hero */
     .hero{
-      min-height: 54vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 4.5rem 1.5rem 3.5rem;
+      padding: 3.2rem 0 1.8rem;
       position:relative;
       overflow:hidden;
     }
@@ -89,16 +88,17 @@
       filter: blur(85px);
       opacity:.55;
       pointer-events:none;
+      z-index:0;
     }
     .hero::before{
       width: 560px; height: 560px;
       background: radial-gradient(circle, var(--blue) 0%, transparent 70%);
-      top:-160px; left:-120px;
+      top:-260px; left:-180px;
     }
     .hero::after{
       width: 460px; height: 460px;
       background: radial-gradient(circle, var(--pink) 0%, transparent 70%);
-      bottom:-120px; right:-140px;
+      top:-140px; right:-180px;
     }
     .blob-green{
       position:absolute;
@@ -106,27 +106,18 @@
       border-radius:50%;
       background: radial-gradient(circle, var(--green) 0%, transparent 70%);
       filter: blur(75px);
-      opacity:.5;
-      bottom: -60px; left: 35%;
+      opacity:.45;
+      top: 40px; left: 35%;
       pointer-events:none;
+      z-index:0;
     }
 
     .hero-inner{
       position:relative;
-      z-index:2;
-      max-width: 1040px;
-      width: 100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 2.5rem;
-      flex-wrap: wrap;
+      z-index:1;
+      padding: 0.8rem 0 0;
     }
 
-    .hero-text{
-      flex: 1 1 520px;
-      min-width: 280px;
-    }
     .pill{
       display:inline-block;
       background: var(--blue);
@@ -137,92 +128,40 @@
       text-transform: uppercase;
       padding: .35rem 1rem;
       border-radius: 999px;
-      margin-bottom: 1.1rem;
+      margin-bottom: 1rem;
     }
     h1{
       font-family: var(--font-serif);
-      font-size: clamp(2rem, 4.8vw, 3.2rem);
+      font-size: clamp(2rem, 4.2vw, 3rem);
       line-height:1.15;
       letter-spacing: -0.5px;
-      margin-bottom: 1rem;
+      margin-bottom: .85rem;
     }
     h1 em{font-style: italic; color: var(--blue-deep);}
     .lead{
       color: var(--text-light);
       font-size: 1.05rem;
       line-height: 1.7;
-      max-width: 54ch;
-      margin-bottom: 1.6rem;
+      max-width: 70ch;
+      margin-bottom: 1.2rem;
     }
-    .cta-row{display:flex; gap: 1rem; flex-wrap: wrap;}
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      gap:.55rem;
-      text-decoration:none;
-      border-radius: 999px;
-      padding: .85rem 1.3rem;
+
+    .meta-line{
+      color: var(--text-light);
+      font-size: .92rem;
+      line-height: 1.6;
+      margin-top: .2rem;
+    }
+    .meta-line a{
+      color: var(--blue-deep);
+      text-decoration: none;
       font-weight: 700;
-      font-size: .95rem;
-      transition: transform .15s, box-shadow .15s, background .18s, color .18s, border-color .18s;
-      border: 1px solid transparent;
-      user-select:none;
     }
-    .btn-primary{
-      background: var(--blue-deep);
-      color: #fff;
-      box-shadow: 0 10px 26px rgba(58,126,168,0.25);
-    }
-    .btn-primary:hover{transform: translateY(-2px); background:#2e6a91;}
-    .btn-outline{
-      background: transparent;
-      border-color: var(--grey-mid);
-      color: var(--text-light);
-    }
-    .btn-outline:hover{border-color: var(--blue-deep); color: var(--blue-deep); background: var(--blue);}
+    .meta-line a:hover{ text-decoration: underline; }
 
-    .hero-side{
-      flex: 0 0 320px;
-      min-width: 260px;
-    }
-    .stat-card{
-      background: var(--white);
-      border: 1px solid var(--grey-mid);
-      border-radius: var(--radius);
-      padding: 1.2rem 1.2rem 1.1rem;
-      box-shadow: var(--shadow);
-    }
-    .stat-title{
-      font-size: .78rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-light);
-      margin-bottom: .6rem;
-    }
-    .stat-list{
-      display:grid;
-      gap: .55rem;
-      margin-top: .6rem;
-    }
-    .stat{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding: .6rem .7rem;
-      border-radius: 12px;
-      background: var(--grey);
-      border: 1px solid var(--grey-mid);
-      font-size: .9rem;
-    }
-    .stat strong{font-weight: 800;}
-    .stat small{color: var(--text-light); font-weight: 600;}
-
-    /* ── Section ── */
+    /* Projects section */
     .section{
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 4.2rem;
+      padding: 1.4rem 0 3.2rem;
     }
     .section-head{
       display:flex;
@@ -230,32 +169,18 @@
       justify-content:space-between;
       gap: 1rem;
       flex-wrap: wrap;
-      margin-bottom: 1.6rem;
-    }
-    .section-label{
-      font-size: .75rem;
-      font-weight: 800;
-      letter-spacing: 1.3px;
-      text-transform: uppercase;
-      color: var(--text-light);
-      margin-bottom: .45rem;
+      margin-bottom: 1rem;
     }
     .section-title{
       font-family: var(--font-serif);
-      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
-      line-height:1.2;
-    }
-    .section-note{
-      color: var(--text-light);
-      font-size: .92rem;
-      max-width: 54ch;
+      font-size: 1.6rem;
+      letter-spacing: -0.3px;
     }
 
-    /* ── “Repo” project cards ── */
     .grid{
       display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.2rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.1rem;
     }
 
     .proj{
@@ -263,50 +188,38 @@
       border: 1px solid var(--grey-mid);
       border-radius: var(--radius);
       overflow:hidden;
-      box-shadow: 0 10px 34px rgba(0,0,0,0.06);
+      box-shadow: var(--shadow-soft);
       transition: transform .18s, box-shadow .18s;
       display:flex;
       flex-direction: column;
-      min-height: 200px;
     }
-    .proj:hover{transform: translateY(-3px); box-shadow: 0 18px 50px rgba(0,0,0,0.10);}
+    .proj:hover{
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
 
     .proj-top{
       height: 4px;
       background: linear-gradient(90deg, var(--blue-mid), var(--pink-mid), var(--green-mid));
     }
 
-    .proj-body{padding: 1.1rem 1.1rem 1rem; display:flex; flex-direction: column; gap:.75rem; height:100%;}
-    .proj-meta{
-      display:flex; align-items:center; justify-content:space-between; gap:.75rem;
-      color: var(--text-light);
-      font-size: .8rem;
-      font-weight: 700;
-      letter-spacing: .2px;
-    }
-    .badge{
-      display:inline-flex; align-items:center; gap:.4rem;
-      padding: .28rem .65rem;
-      border-radius: 999px;
-      border: 1px solid var(--grey-mid);
-      background: var(--grey);
-      font-size: .78rem;
-      font-weight: 800;
-      color: var(--text-light);
-      white-space: nowrap;
+    .proj-body{
+      padding: 1.1rem 1.1rem 1rem;
+      display:flex;
+      flex-direction: column;
+      gap:.65rem;
+      height:100%;
     }
 
     .proj h3{
       font-size: 1.05rem;
       font-weight: 900;
       letter-spacing: -0.2px;
-      margin-top: .1rem;
     }
     .proj p{
       color: var(--text-light);
       font-size: .92rem;
       line-height: 1.6;
-      margin-bottom: .2rem;
     }
 
     .proj-actions{
@@ -317,33 +230,33 @@
       gap: 1rem;
       padding-top: .5rem;
     }
-    .proj a.open{
+    .open{
       display:inline-flex;
       align-items:center;
       gap:.55rem;
       text-decoration:none;
       font-weight: 900;
       color: var(--blue-deep);
-      padding: .55rem .85rem;
+      padding: .55rem .9rem;
       border-radius: 999px;
       background: var(--blue);
       border: 1px solid var(--blue-mid);
       transition: transform .15s, background .15s;
       white-space: nowrap;
     }
-    .proj a.open:hover{transform: translateY(-1px); background: #cfe6f3;}
-    .proj code{
+    .open:hover{transform: translateY(-1px); background: #cfe6f3;}
+
+    .path{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: .78rem;
       color: var(--text-light);
       background: var(--grey);
       border: 1px solid var(--grey-mid);
       padding: .2rem .45rem;
-      border-radius: 8px;
+      border-radius: 10px;
       white-space: nowrap;
     }
 
-    /* ── Footer ── */
     footer{
       text-align:center;
       padding: 2rem 1rem;
@@ -353,11 +266,10 @@
       background: rgba(255,255,255,0.35);
     }
 
-    @media (max-width: 760px){
-      header{padding: 1rem 1.2rem;}
-      .hero{padding-top: 3.6rem;}
-      .hero-inner{gap: 1.6rem;}
-      .hero-side{flex: 1 1 420px;}
+    @media (max-width: 680px){
+      header{padding: 1rem 1rem;}
+      .wrap{width: calc(100% - 2rem);}
+      .hero{padding-top: 2.6rem;}
     }
   </style>
 </head>
@@ -367,114 +279,65 @@
     <div class="logo">eli<span>Viz</span> Projects</div>
     <nav>
       <a href="#projects">Projects</a>
-      <a href="#about">About</a>
     </nav>
   </header>
 
   <section class="hero">
     <div class="blob-green"></div>
-
-    <div class="hero-inner">
-      <div class="hero-text">
-        <div class="pill">Science × Data × Design</div>
-        <h1>Interactive tools for <em>clear, reproducible</em> results</h1>
-        <p class="lead">
-          A clean hub for eliViz prototypes and deliverables. Browse projects like a repo, click in, and view the full interactive pages.
-        </p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="#projects">Browse projects →</a>
-          <a class="btn btn-outline" href="igenity/">Open correlations heatmap</a>
-        </div>
-      </div>
-
-      <div class="hero-side">
-        <div class="stat-card">
-          <div class="stat-title">Quick access</div>
-          <div class="stat-list">
-            <div class="stat"><small>Featured</small> <strong>Heatmap</strong></div>
-            <div class="stat"><small>Topic</small> <strong>Igenity × NAV</strong></div>
-            <div class="stat"><small>Format</small> <strong>Static HTML</strong></div>
-          </div>
-        </div>
-      </div>
+    <div class="wrap hero-inner">
+      <div class="pill">Hosted on GitHub Pages</div>
+      <h1>Interactive science visuals, <em>ready to share</em></h1>
+      <p class="lead">
+        A lightweight project hub. Click a project to open the interactive page.
+      </p>
+      <p class="meta-line">
+        This site is hosted on GitHub and served via GitHub Pages.
+      </p>
     </div>
   </section>
 
   <section id="projects" class="section">
-    <div class="section-head">
-      <div>
-        <div class="section-label">Repository index</div>
+    <div class="wrap">
+      <div class="section-head">
         <div class="section-title">Projects</div>
       </div>
-      <div class="section-note">
-        Each card maps to a folder in this repository. Click “Open” to load the folder’s <code>index.html</code>.
-      </div>
-    </div>
 
-    <div class="grid">
+      <div class="grid">
 
-      <!-- Project 1: Igenity -->
-      <article class="proj">
-        <div class="proj-top"></div>
-        <div class="proj-body">
-          <div class="proj-meta">
-            <span class="badge">📁 folder</span>
-            <span class="badge">interactive</span>
+        <!-- Project: Heatmap -->
+        <article class="proj">
+          <div class="proj-top"></div>
+          <div class="proj-body">
+            <h3>Igenity vs. NAV breeding values — a comparison</h3>
+            <p>
+              Correlation heatmaps across breeds and traits, with tooltips and a bilingual context toggle (EN/SV).
+            </p>
+            <div class="proj-actions">
+              <a class="open" href="heatmap/">Open →</a>
+              <span class="path">heatmap/</span>
+            </div>
           </div>
-          <h3>Breed × Trait Correlations</h3>
-          <p>
-            Heatmap dashboard comparing correlations between Igenity EBVs and NAV across breeds and traits.
-          </p>
-          <div class="proj-actions">
-            <a class="open" href="igenity/">Open →</a>
-            <code>igenity/</code>
+        </article>
+
+        <!-- Add more projects by duplicating this card -->
+        <!--
+        <article class="proj">
+          <div class="proj-top"></div>
+          <div class="proj-body">
+            <h3>Project title</h3>
+            <p>Short description.</p>
+            <div class="proj-actions">
+              <a class="open" href="project-folder/">Open →</a>
+              <span class="path">project-folder/</span>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
+        -->
 
-      <!-- Duplicate this block for more projects -->
-      <article class="proj">
-        <div class="proj-top"></div>
-        <div class="proj-body">
-          <div class="proj-meta">
-            <span class="badge">📁 folder</span>
-            <span class="badge">template</span>
-          </div>
-          <h3>Another project</h3>
-          <p>
-            Add a folder and an <code>index.html</code> inside it, then update the link here.
-          </p>
-          <div class="proj-actions">
-            <a class="open" href="another-project/">Open →</a>
-            <code>another-project/</code>
-          </div>
-        </div>
-      </article>
-
-    </div>
-  </section>
-
-  <section id="about" class="section" style="padding-top:0;">
-    <div class="section-head" style="margin-bottom:1rem;">
-      <div>
-        <div class="section-label">About</div>
-        <div class="section-title">How this is organized</div>
-      </div>
-    </div>
-
-    <div class="stat-card" style="max-width:1080px;margin:0 auto;">
-      <p style="color:var(--text-light);line-height:1.7;">
-        This site is served by GitHub Pages from a single repository. Each project lives in its own folder and is reachable at
-        <code style="font-size:.82rem;">/folder-name/</code>. Keep project assets (images/scripts) inside the same folder, and use relative paths.
-      </p>
-      <div style="margin-top:1rem; display:flex; flex-wrap:wrap; gap:.6rem;">
-        <span class="badge">✔ self-contained</span>
-        <span class="badge">✔ folder-based routing</span>
-        <span class="badge">✔ GitHub Pages friendly</span>
       </div>
     </div>
   </section>
 
-  <footer>© 2026 eliViz Design — Project Hub</footer>
+  <footer>© 2026 eliViz Design</footer>
 </body>
 </html>
