@@ -198,16 +198,25 @@
       box-shadow: var(--shadow);
     }
 
+    /* Default: thin gradient bar */
     .proj-top{
       height: 4px;
       background: linear-gradient(90deg, var(--blue-mid), var(--pink-mid), var(--green-mid));
     }
-   .proj-top img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;      /* crops nicely */
-    display: block;
+
+    /* Media header (GIF/IMG preview) */
+    .proj-top.proj-media{
+      height: 180px;
+      background: none;
     }
+    .proj-top.proj-media img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
     .proj-body{
       padding: 1.1rem 1.1rem 1rem;
       display:flex;
@@ -323,12 +332,14 @@
             </div>
           </div>
         </article>
-        
-        <!-- Project2: vis -->
+
+        <!-- Project2: vis (with GIF preview) -->
         <article class="proj">
-          <div class="proj-top"></div>
+          <div class="proj-top proj-media">
+            <img src="assets/nav_vs_igenity_circular_journey.gif" alt="Igenity vs NAV simulation preview">
+          </div>
           <div class="proj-body">
-            <h3>Igenity vs. NAV Breeding goal</h3>
+            <h3>Igenity vs. NAV breeding goal</h3>
             <p>
               Simulated genetic progress towards breeding goal of NAV vs Igenity.
             </p>
@@ -338,40 +349,6 @@
             </div>
           </div>
         </article>
-
-        <article class="proj">
-          <div class="proj-top">
-           <img src="assets/nav_vs_igenity_circular_journey.gif" alt="Igenity vs NAV simulation preview">
-         </div>
-
-        <div class="proj-body">
-          <h3>Igenity vs. NAV Breeding goal</h3>
-          <p>
-            Simulated genetic progress towards breeding goal of NAV vs Igenity.
-          </p>
-        <div class="proj-actions">
-        <a class="open" href="assets/">Open →</a>
-        <span class="path">assets/</span>
-    </div>
-  </div>
-</article>
-
-        <!-- Add more projects by duplicating this card -->
-        <!--
-        <article class="proj">
-          <div class="proj-top"></div>
-          <div class="proj-body">
-            <h3>Igenity vs. NAV breeding values — a comparison</h3>
-            <p>
-              Correlation heatmaps across breeds and traits, with tooltips and a bilingual context toggle (EN/SV).
-            </p>
-            <div class="proj-actions">
-              <a class="open" href="igenity/">Open →</a>
-              <span class="path">igenity/</span>
-            </div>
-          </div>
-        </article>
-        -->
 
       </div>
     </div>
