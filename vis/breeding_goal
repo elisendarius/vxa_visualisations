@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NAV vs Igenity – Circular Journey</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f0f4f8;
+      --nav: #2d7a5c;
+      --nav-light: #a3d4bc;
+      --igenity: #c2526e;
+      --igenity-light: #f5bfca;
+      --text: #1e2128;
+      --muted: #6b7280;
+      --card: #ffffff;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1.5rem 3rem;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      text-align: center;
+      margin-bottom: 0.4rem;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 300;
+      max-width: 560px;
+    }
+    .legend {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .canvas-wrap {
+      background: var(--card);
+      border-radius: 18px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+      padding: 1.2rem;
+      width: 100%;
+      max-width: 660px;
+    }
+    canvas { width: 100%; height: auto; display: block; border-radius: 10px; }
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 0.65rem 1.6rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: all 0.18s;
+    }
+    .btn-play { background: var(--nav); color: white; box-shadow: 0 4px 14px rgba(45,122,92,0.3); }
+    .btn-play:hover { background: #236047; transform: translateY(-1px); }
+    .btn-reset { background: white; color: var(--muted); border: 1.5px solid #e2e5ea; }
+    .btn-reset:hover { border-color: var(--nav); color: var(--nav); }
+    .gen-counter {
+      text-align: center;
+      margin-top: 0.9rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 0.4px;
+    }
+    .callouts {
+      display: flex;
+      gap: 1.2rem;
+      margin-top: 1.8rem;
+      width: 100%;
+      max-width: 660px;
+      flex-wrap: wrap;
+    }
+    .callout {
+      flex: 1 1 250px;
+      background: var(--card);
+      border-radius: 14px;
+      padding: 1.2rem 1.4rem;
+      border-top: 4px solid transparent;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .callout.nav-card  { border-color: var(--nav); }
+    .callout.igen-card { border-color: var(--igenity); }
+    .callout h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .callout.nav-card  h3 { color: var(--nav); }
+    .callout.igen-card h3 { color: var(--igenity); }
+    .callout p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<h1>The Road to Your Breeding Goal</h1>
+<p class="subtitle">NAV spirals steadily toward the goal at the centre — Igenity drifts with no direction</p>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--nav)"></div>
+    <span style="color:var(--nav)">NAV — Converging to goal</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--igenity)"></div>
+    <span style="color:var(--igenity)">Igenity — No direction</span>
+  </div>
+</div>
+
+<div class="canvas-wrap">
+  <canvas id="c" width="640" height="640"></canvas>
+</div>
+
+<div class="controls">
+  <button class="btn btn-play" id="btnPlay" onclick="startAnim()">▶ Start</button>
+  <button class="btn btn-reset" onclick="resetAnim()">↺ Reset</button>
+</div>
+<div class="gen-counter" id="genLabel">Generation 0 / 30</div>
+
+<div class="callouts">
+  <div class="callout nav-card">
+    <h3>✅ NAV Breeding Values</h3>
+    <p>Each generation moves consistently closer to the breeding goal at the centre. The path is a steady inward spiral — predictable, reliable, purposeful.</p>
+  </div>
+  <div class="callout igen-card">
+    <h3>⚠️ Igenity Predictions</h3>
+    <p>No defined goal, no consistent direction. The path wanders unpredictably in all directions — sometimes inward, often outward, with no reliable progress.</p>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const CX = W / 2, CY = H / 2;
+
+const STEPS  = 30;
+const MAX_R  = W * 0.26;
+const GOAL_R = 16;
+
+/* ── Seeded RNG ── */
+function seededRand(seed) {
+  let s = seed;
+  return () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+}
+
+/* ── NAV path: tight inward spiral, always getting closer ── */
+const navPath = [];
+(function() {
+  const rotations = Math.PI * 5.0; // ~2.5 turns — smooth spiral in smaller ring
+  for (let i = 0; i <= STEPS; i++) {
+    const t    = i / STEPS;
+    const ease = Math.pow(1 - t, 0.65);          // decelerates near centre
+    const r    = GOAL_R + (MAX_R - GOAL_R) * ease;
+    const ang  = -Math.PI / 2 + rotations * t;
+    navPath.push({ x: CX + r * Math.cos(ang), y: CY + r * Math.sin(ang) });
+  }
+})();
+
+/* ── Igenity path: pure random walk, no goal, wanders freely ── */
+const igenPath = [];
+(function() {
+  const rng = seededRand(77);
+  // start somewhere mid-ring
+  let x = CX + MAX_R * 0.55 * Math.cos(1.2);
+  let y = CY + MAX_R * 0.55 * Math.sin(1.2);
+  igenPath.push({ x, y });
+
+  // Pre-define phases: some generations pull toward centre, others push away
+  // pattern: out, close, out, close, out — feels like "false hope" moments
+  const pullPhases = [6, 7, 8, 16, 17, 18];  // gens that drift toward centre
+  const pushPhases = [11, 12, 13, 24, 25, 26]; // gens that drift outward
+
+  for (let i = 1; i <= STEPS; i++) {
+    let ang, step;
+    const dx = CX - x, dy = CY - y;
+    const distToGoal = Math.sqrt(dx*dx + dy*dy);
+    const angleToGoal = Math.atan2(dy, dx);
+
+    if (pullPhases.includes(i)) {
+      // Drift toward centre — but with noise so it's not clean
+      ang  = angleToGoal + (rng() - 0.5) * 1.4;
+      step = 18 + rng() * 22;
+    } else if (pushPhases.includes(i)) {
+      // Drift away from centre
+      ang  = angleToGoal + Math.PI + (rng() - 0.5) * 1.2;
+      step = 22 + rng() * 35;
+    } else {
+      // Pure random wander
+      ang  = rng() * Math.PI * 2;
+      step = 18 + rng() * 30;
+    }
+
+    x += Math.cos(ang) * step;
+    y += Math.sin(ang) * step;
+    const pad = 40;
+    x = Math.max(pad, Math.min(W - pad, x));
+    y = Math.max(pad, Math.min(H - pad, y));
+    igenPath.push({ x, y });
+  }
+})();
+
+/* ── Animation state ── */
+let progress = 0, animId = null, running = false;
+
+function resetAnim() {
+  if (animId) cancelAnimationFrame(animId);
+  animId = null; running = false; progress = 0;
+  document.getElementById('btnPlay').textContent = '▶ Start';
+  document.getElementById('genLabel').textContent = 'Generation 0 / ' + STEPS;
+  drawFrame(0);
+}
+
+function startAnim() {
+  if (running) return;
+  running = true;
+  document.getElementById('btnPlay').textContent = '⏸ Running…';
+  function tick() {
+    progress += 0.06;
+    if (progress >= STEPS) { progress = STEPS; running = false; document.getElementById('btnPlay').textContent = '✓ Done'; }
+    drawFrame(progress / STEPS);
+    document.getElementById('genLabel').textContent = 'Generation ' + Math.round(progress) + ' / ' + STEPS;
+    if (running) animId = requestAnimationFrame(tick);
+  }
+  animId = requestAnimationFrame(tick);
+}
+
+/* ── Interpolate ── */
+function lerpPath(path, pct) {
+  const t = pct * STEPS;
+  const i = Math.min(Math.floor(t), STEPS - 1);
+  const f = t - i;
+  const a = path[i], b = path[Math.min(i + 1, STEPS)];
+  return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f };
+}
+
+/* ══════════════════════════════════
+   DRAW FUNCTIONS
+══════════════════════════════════ */
+function drawFrame(pct) {
+  ctx.clearRect(0, 0, W, H);
+  drawBg();
+  drawRings();
+  drawGoal();
+  drawIgenityTrail(pct);
+  drawNavTrail(pct);
+  drawDots(pct);
+}
+
+function drawBg() {
+  const g = ctx.createRadialGradient(CX, CY, 0, CX, CY, W * 0.7);
+  g.addColorStop(0,   '#e6f4ee');
+  g.addColorStop(0.5, '#f0f5fb');
+  g.addColorStop(1,   '#eef1f6');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+}
+
+function drawRings() {
+  const configs = [
+    { r: MAX_R,        dash: [5,6], color: 'rgba(194,82,110,0.13)', lw: 1.5 },
+    { r: MAX_R * 0.75, dash: [4,7], color: 'rgba(107,114,128,0.10)', lw: 1 },
+    { r: MAX_R * 0.50, dash: [4,7], color: 'rgba(45,122,92,0.10)',  lw: 1 },
+    { r: MAX_R * 0.25, dash: [4,7], color: 'rgba(45,122,92,0.14)',  lw: 1.2 },
+  ];
+  configs.forEach(({ r, dash, color, lw }) => {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(CX, CY, r, 0, Math.PI * 2);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lw;
+    ctx.setLineDash(dash);
+    ctx.stroke();
+    ctx.restore();
+  });
+
+  // Ring labels
+  ctx.save();
+  ctx.font = '500 10px "IBM Plex Sans"';
+  ctx.fillStyle = 'rgba(194,82,110,0.45)';
+  ctx.textAlign = 'center';
+  ctx.fillText('Outer boundary', CX, CY - MAX_R + 13);
+  ctx.fillStyle = 'rgba(45,122,92,0.40)';
+  ctx.fillText('Goal zone', CX, CY - MAX_R * 0.25 + 13);
+  ctx.restore();
+}
+
+function drawGoal() {
+  // Soft glow
+  const glow = ctx.createRadialGradient(CX, CY, 0, CX, CY, GOAL_R * 5);
+  glow.addColorStop(0,   'rgba(45,122,92,0.28)');
+  glow.addColorStop(0.6, 'rgba(45,122,92,0.07)');
+  glow.addColorStop(1,   'rgba(45,122,92,0)');
+  ctx.save();
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(CX, CY, GOAL_R * 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // Nucleus
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(CX, CY, GOAL_R, 0, Math.PI * 2);
+  const fill = ctx.createRadialGradient(CX - 4, CY - 4, 0, CX, CY, GOAL_R);
+  fill.addColorStop(0, '#4aaa82');
+  fill.addColorStop(1, '#2d7a5c');
+  ctx.fillStyle = fill;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.restore();
+
+  // Label
+  ctx.save();
+  ctx.fillStyle = '#2d7a5c';
+  ctx.font = '600 11px "IBM Plex Sans"';
+  ctx.textAlign = 'center';
+  ctx.fillText('🎯 BREEDING GOAL', CX, CY + GOAL_R + 17);
+  ctx.restore();
+}
+
+function drawNavTrail(pct) {
+  const steps = Math.floor(pct * STEPS);
+  if (steps === 0) return;
+  ctx.save();
+
+  // Segment-by-segment with fading alpha
+  for (let i = 1; i <= steps; i++) {
+    const alpha = 0.12 + 0.7 * (i / steps);
+    ctx.beginPath();
+    ctx.moveTo(navPath[i-1].x, navPath[i-1].y);
+    ctx.lineTo(navPath[i].x,   navPath[i].y);
+    ctx.strokeStyle = `rgba(45,122,92,${alpha})`;
+    ctx.lineWidth   = 2.5;
+    ctx.lineCap     = 'round';
+    ctx.stroke();
+  }
+
+  // Glow on recent tail
+  const tail = Math.max(0, steps - 10);
+  ctx.globalAlpha  = 0.18;
+  ctx.strokeStyle  = '#a3d4bc';
+  ctx.lineWidth    = 9;
+  ctx.lineJoin     = 'round';
+  ctx.lineCap      = 'round';
+  ctx.beginPath();
+  ctx.moveTo(navPath[tail].x, navPath[tail].y);
+  for (let i = tail + 1; i <= steps; i++) ctx.lineTo(navPath[i].x, navPath[i].y);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function drawIgenityTrail(pct) {
+  const steps = Math.floor(pct * STEPS);
+  if (steps === 0) return;
+  ctx.save();
+
+  for (let i = 1; i <= steps; i++) {
+    const alpha = 0.08 + 0.55 * (i / steps);
+    ctx.beginPath();
+    ctx.moveTo(igenPath[i-1].x, igenPath[i-1].y);
+    ctx.lineTo(igenPath[i].x,   igenPath[i].y);
+    ctx.strokeStyle = `rgba(194,82,110,${alpha})`;
+    ctx.lineWidth   = 2;
+    ctx.setLineDash([7, 5]);
+    ctx.lineCap     = 'round';
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+function drawDots(pct) {
+  // ── NAV dot ──
+  const np = lerpPath(navPath, pct);
+  ctx.save();
+  ctx.shadowColor = 'rgba(45,122,92,0.55)';
+  ctx.shadowBlur  = 16;
+  ctx.beginPath();
+  ctx.arc(np.x, np.y, 10, 0, Math.PI * 2);
+  ctx.fillStyle   = '#2d7a5c';
+  ctx.fill();
+  ctx.strokeStyle = 'white';
+  ctx.lineWidth   = 2.5;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.fillStyle  = '#1e6045';
+  ctx.font       = '600 11px "IBM Plex Sans"';
+  ctx.textAlign  = 'left';
+  ctx.shadowColor = 'rgba(255,255,255,0.8)';
+  ctx.shadowBlur  = 4;
+  ctx.fillText('NAV', np.x + 13, np.y + 4);
+  ctx.restore();
+
+  // ── Igenity dot ──
+  const ip = lerpPath(igenPath, pct);
+  ctx.save();
+  ctx.shadowColor = 'rgba(194,82,110,0.55)';
+  ctx.shadowBlur  = 14;
+  ctx.beginPath();
+  ctx.arc(ip.x, ip.y, 9, 0, Math.PI * 2);
+  ctx.fillStyle   = '#c2526e';
+  ctx.fill();
+  ctx.strokeStyle = 'white';
+  ctx.lineWidth   = 2.5;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.fillStyle  = '#a03358';
+  ctx.font       = '600 11px "IBM Plex Sans"';
+  ctx.textAlign  = 'left';
+  ctx.shadowColor = 'rgba(255,255,255,0.8)';
+  ctx.shadowBlur  = 4;
+  ctx.fillText('Igenity', ip.x + 12, ip.y + 4);
+  ctx.restore();
+}
+
+// Initial draw
+drawFrame(0);
+</script>
+</body>
+</html>
