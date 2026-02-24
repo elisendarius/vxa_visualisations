@@ -1,540 +1,602 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>eliViz Design – Science Visualization</title>
-  <meta name="description" content="Transforming science into clear, pedagogical visuals and data stories.">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Breed Correlation Heatmap</title>
+
   <style>
     :root {
-      --grey: #f0f1f3;
-      --grey-mid: #d8dce2;
-      --grey-dark: #6b7280;
-      --blue: #ddeef7;
-      --blue-mid: #a8d0e6;
-      --blue-deep: #3a7ea8;
-      --green: #d9efe4;
-      --green-mid: #a3d4bc;
-      --green-deep: #3a8a65;
-      --pink: #fce8ec;
-      --pink-mid: #f5bfca;
-      --pink-deep: #c2526e;
-      --text: #2a2d35;
-      --text-light: #5a5f6e;
-      --white: #ffffff;
-      --radius: 16px;
-      --radius-sm: 8px;
+      --bg: #f5f6f8;
+      --card: #ffffff;
+      --text: #1e2128;
+      --muted: #6b7280;
+      --border: #e2e5ea;
+      --neg-strong: #c2526e;
+      --neutral:    #f0f1f3;
+      --pos-strong: #2d7a5c;
+      --radius: 14px;
+
+      --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      --font-serif: ui-serif, "Georgia", "Times New Roman", Times, serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
+    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: #f7f8fa;
+      font-family: var(--font-sans);
+      background: var(--bg);
       color: var(--text);
-      overflow-x: hidden;
+      padding: 2.5rem 1.5rem;
+      min-height: 100vh;
     }
 
-    /* ── Header ── */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(247, 248, 250, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--grey-mid);
+    /* ── Header row ── */
+    .topbar {
+      max-width: 1020px;
+      margin: 0 auto 1.2rem;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      padding: 1rem 3rem;
-    }
-
-    .logo {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.5rem;
-      color: var(--text);
-      letter-spacing: -0.5px;
-    }
-    .logo span { color: var(--blue-deep); }
-
-    nav a {
-      color: var(--text-light);
-      margin-left: 2rem;
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      letter-spacing: 0.3px;
-      transition: color 0.2s;
-    }
-    nav a:hover { color: var(--blue-deep); }
-
-    /* ── Hero ── */
-    .hero {
-      min-height: 82vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 5rem 2rem 4rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Soft blobs */
-    .hero::before, .hero::after {
-      content: '';
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.55;
-      pointer-events: none;
-    }
-    .hero::before {
-      width: 520px; height: 520px;
-      background: radial-gradient(circle, var(--blue) 0%, transparent 70%);
-      top: -100px; left: -80px;
-    }
-    .hero::after {
-      width: 420px; height: 420px;
-      background: radial-gradient(circle, var(--pink) 0%, transparent 70%);
-      bottom: -60px; right: -80px;
-    }
-
-    .blob-green {
-      position: absolute;
-      width: 350px; height: 350px;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--green) 0%, transparent 70%);
-      filter: blur(70px);
-      opacity: 0.5;
-      bottom: 30px; left: 35%;
-      pointer-events: none;
-    }
-
-    .hero-inner {
-      position: relative;
-      z-index: 2;
-      max-width: 720px;
-    }
-
-    .hero-pill {
-      display: inline-block;
-      background: var(--blue);
-      color: var(--blue-deep);
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      padding: 0.35rem 1rem;
-      border-radius: 999px;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(2.4rem, 6vw, 4rem);
-      line-height: 1.15;
-      color: var(--text);
-      margin-bottom: 1.2rem;
-    }
-
-    .hero h1 em {
-      font-style: italic;
-      color: var(--blue-deep);
-    }
-
-    .hero p {
-      font-size: 1.1rem;
-      color: var(--text-light);
-      line-height: 1.7;
-      max-width: 560px;
-      margin: 0 auto 2rem;
-    }
-
-    .cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-
-    .btn-primary {
-      display: inline-block;
-      background: var(--blue-deep);
-      color: white;
-      padding: 0.85rem 2rem;
-      border-radius: 999px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: background 0.2s, transform 0.15s;
-      box-shadow: 0 4px 18px rgba(58,126,168,0.25);
-    }
-    .btn-primary:hover { background: #2e6a91; transform: translateY(-2px); }
-
-    .btn-outline {
-      display: inline-block;
-      border: 1.5px solid var(--grey-mid);
-      color: var(--text-light);
-      padding: 0.85rem 2rem;
-      border-radius: 999px;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .btn-outline:hover { border-color: var(--blue-deep); color: var(--blue-deep); }
-
-    /* ── Divider ── */
-    .section-divider {
-      text-align: center;
-      padding: 0.5rem 0 0.5rem;
-      color: var(--grey-mid);
-      font-size: 1.4rem;
-      letter-spacing: 6px;
-    }
-
-    /* ── Services ── */
-    #services {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 4rem 2rem 5rem;
-    }
-
-    .section-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--text-light);
-      margin-bottom: 0.6rem;
-    }
-
-    .section-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
-      color: var(--text);
-      margin-bottom: 2.5rem;
-      line-height: 1.2;
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 1.4rem;
-    }
-
-    .card {
-      background: var(--white);
-      border-radius: var(--radius);
-      padding: 1.4rem 1.4rem 1.2rem;
-      border: 1px solid var(--grey-mid);
-      display: flex;
-      flex-direction: column;
-      transition: box-shadow 0.2s, transform 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-    .card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: translateY(-3px); }
-
-    /* Accent top bar per card */
-    .card:nth-child(1)::before { background: var(--blue-mid); }
-    .card:nth-child(2)::before { background: var(--green-mid); }
-    .card:nth-child(3)::before { background: var(--pink-mid); }
-    .card:nth-child(4)::before { background: var(--grey-mid); }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      border-radius: var(--radius) var(--radius) 0 0;
-    }
-
-    .card-icon {
-      width: 36px; height: 36px;
-      border-radius: var(--radius-sm);
-      margin-bottom: 1rem;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem;
-    }
-    .card:nth-child(1) .card-icon { background: var(--blue); }
-    .card:nth-child(2) .card-icon { background: var(--green); }
-    .card:nth-child(3) .card-icon { background: var(--pink); }
-    .card:nth-child(4) .card-icon { background: var(--grey); }
-
-    .card h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-    }
-
-    .card p {
-      font-size: 0.875rem;
-      color: var(--text-light);
-      line-height: 1.6;
-      margin-bottom: 1rem;
-    }
-
-    .card img {
-      width: 100%;
-      height: 160px;
-      object-fit: contain;
-      border-radius: var(--radius-sm);
-      background: var(--grey);
-      margin-top: auto;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .card img:hover { transform: scale(1.03); }
-
-    /* ── Contact ── */
-    #contact {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 2rem 2rem 5rem;
-    }
-
-    .contact-box {
-      background: var(--white);
-      border: 1px solid var(--grey-mid);
-      border-radius: var(--radius);
-      padding: 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2rem;
+      gap: 1rem;
       flex-wrap: wrap;
     }
 
-    .contact-box h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.9rem;
-      margin-bottom: 0.5rem;
+    .titles { flex: 1 1 auto; min-width: 260px; }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 3.5vw, 2.2rem);
       color: var(--text);
-    }
-    .contact-box p { color: var(--text-light); font-size: 0.95rem; line-height: 1.6; }
-    .contact-box a { color: var(--blue-deep); }
-
-    .contact-links {
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-      min-width: 200px;
-    }
-
-    .contact-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      background: var(--grey);
-      border: 1px solid var(--grey-mid);
-      padding: 0.7rem 1.2rem;
-      border-radius: 999px;
-      text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text);
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .contact-link:hover { background: var(--blue); border-color: var(--blue-mid); color: var(--blue-deep); }
-
-    /* ── Footer ── */
-    footer {
       text-align: center;
-      padding: 1.8rem 1rem;
-      font-size: 0.82rem;
-      color: var(--text-light);
-      border-top: 1px solid var(--grey-mid);
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.875rem;
+      margin-bottom: 0;
+      font-weight: 300;
     }
 
-    /* ── Lightbox ── */
-    #lightbox {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      inset: 0;
-      background: rgba(20,22,28,0.88);
-      backdrop-filter: blur(6px);
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      animation: fadeIn 0.25s ease;
-    }
-    #lightbox img {
-      max-width: 92%;
-      max-height: 88vh;
-      object-fit: contain;
-      border-radius: var(--radius);
-      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
-      animation: zoomIn 0.25s ease;
-    }
-
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes zoomIn { from { transform: scale(0.94); } to { transform: scale(1); } }
-
-    /* ── Animations ── */
-    @keyframes floatUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .hero-inner { animation: floatUp 0.7s ease both; width: 100%; max-width: 1000px; }
-
-    .hero-layout {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4rem;
-      flex-wrap: wrap;
-    }
-
-    .hero-text {
-      flex: 1 1 380px;
-      text-align: left;
-    }
-
-    .hero-text .cta-row { justify-content: flex-start; }
-
-    .hero-portrait {
+    .lang {
       flex: 0 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: floatUp 0.9s ease both;
+      gap: 0.4rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.35rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+    }
+    .lang button{
+      border: 0;
+      background: transparent;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      font-family: var(--font-sans);
+    }
+    .lang button.active{
+      background: #1e2128;
+      color: #ffffff;
     }
 
-    .portrait-ring {
-      width: 280px;
-      height: 280px;
+    /* ── Group tabs ── */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .tab {
+      padding: 0.45rem 1.1rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: var(--card);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.18s;
+      font-family: var(--font-sans);
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .tab:hover { border-color: #a3d4bc; color: #2d7a5c; }
+    .tab.active { background: #2d7a5c; border-color: #2d7a5c; color: white; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      max-width: 1020px;
+      margin: 0 auto 2rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+      overflow-x: auto;
+    }
+
+    .group-title {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      margin-bottom: 1.2rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+    }
+    .group-title .dot {
+      width: 10px; height: 10px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--blue-mid) 0%, var(--pink-mid) 50%, var(--green-mid) 100%);
-      padding: 4px;
-      box-shadow: 0 8px 40px rgba(58,126,168,0.15);
+      flex-shrink: 0;
     }
 
-    .portrait-ring img {
+    /* ── Heatmap table ── */
+    table {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-      border-radius: 50%;
-      background: var(--grey);
-      display: block;
+      border-collapse: separate;
+      border-spacing: 4px;
+      min-width: 580px;
     }
 
-    @media (max-width: 700px) {
-      .hero-layout { flex-direction: column-reverse; gap: 2rem; }
-      .hero-text { text-align: center; }
-      .hero-text .cta-row { justify-content: center; }
-      .portrait-ring { width: 200px; height: 200px; }
+    thead th {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-align: center;
+      padding: 0.4rem 0.3rem;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
     }
-    .card { animation: floatUp 0.5s ease both; }
-    .card:nth-child(1) { animation-delay: 0.05s; }
-    .card:nth-child(2) { animation-delay: 0.12s; }
-    .card:nth-child(3) { animation-delay: 0.19s; }
-    .card:nth-child(4) { animation-delay: 0.26s; }
+    thead th:first-child { text-align: left; min-width: 220px; }
 
-    @media (max-width: 640px) {
-      header { padding: 1rem 1.5rem; }
-      .contact-box { padding: 2rem; }
+    .n-row td {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      text-align: center;
+      padding: 0.1rem 0.3rem 0.6rem;
+      white-space: nowrap;
+    }
+    .n-row td:first-child { text-align: left; padding-left: 0; font-size: 0.7rem; }
+
+    tbody tr:not(.n-row) td:first-child {
+      font-size: 0.8rem;
+      color: var(--text);
+      padding: 0.3rem 0.6rem 0.3rem 0;
+      line-height: 1.35;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .cell {
+      border-radius: 8px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 400;
+      padding: 0.55rem 0.4rem;
+      cursor: default;
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .cell:hover {
+      transform: scale(1.12);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      z-index: 10;
+    }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      margin-top: 1.8rem;
+      flex-wrap: wrap;
+    }
+    .legend-label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+    .legend-bar {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+    }
+    .legend-swatch {
+      width: 28px; height: 20px;
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6rem;
+      font-family: var(--font-mono);
+    }
+
+    /* ── Tooltip ── */
+    .tooltip {
+      position: fixed;
+      background: #1e2128;
+      color: white;
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-family: var(--font-sans);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 999;
+      max-width: 260px;
+      line-height: 1.5;
+    }
+    .tooltip.show { opacity: 1; }
+
+    /* ── Panel animation ── */
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeUp 0.3s ease; }
+    @keyframes fadeUp { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+    .source {
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 2rem 1rem; }
+      .card { padding: 1.2rem; }
+      tbody tr:not(.n-row) td:first-child { white-space: normal; }
+      .topbar { justify-content: center; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">eli<span>Viz</span> Design</div>
-    <nav>
-      <a href="#services">Services</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </header>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="blob-green"></div>
-    <div class="hero-inner">
-      <div class="hero-layout">
-        <div class="hero-text">
-          <div class="hero-pill">Science × Design</div>
-          <h1>Turning Science into<br><em>Clear, Impactful Visuals</em></h1>
-          <p>We transform complex data into pedagogical figures and interactive visualizations that tell a story and engage your audience.</p>
-          <div class="cta-row">
-            <a class="btn-primary" href="#contact">Let's work together</a>
-            <a class="btn-outline" href="#services">See the work</a>
-          </div>
-        </div>
-        <div class="hero-portrait">
-          <div class="portrait-ring">
-            <img src="eli.png" alt="Eli – eliViz Design">
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Services -->
-  <section id="services">
-    <div class="section-label">What we do</div>
-    <h2 class="section-title">Our Services</h2>
-
-    <div class="cards-grid">
-      <div class="card">
-        <div class="card-icon">📊</div>
-        <h3>Storytelling with Data</h3>
-        <p>We combine narrative and design to help your audience understand and act on your findings.</p>
-        <img src="images/red_project.png" alt="Storytelling example" onclick="openLightbox(this.src)">
-      </div>
-
-      <div class="card">
-        <div class="card-icon">🔬</div>
-        <h3>Scientific Illustration</h3>
-        <p>Pedagogical diagrams and schematics tailored for publications, reports, and educational material.</p>
-        <img src="images/Poster_Methane_ICAR.png" alt="Scientific illustration" onclick="openLightbox(this.src)">
-      </div>
-
-      <div class="card">
-        <div class="card-icon">📈</div>
-        <h3>Data Visualization</h3>
-        <p>Interactive charts and figures that make complex analyses clear and engaging.</p>
-        <img src="images/bulls_ss.png" alt="Data visualization example" onclick="openLightbox(this.src)">
-      </div>
-
-      <div class="card">
-        <div class="card-icon">🧬</div>
-        <h3>Animal Breeding &amp; Genetics</h3>
-        <p>Specialized visuals for breeding programs, genomics, and genetic analyses.</p>
-        <img src="images/work_in_progress.png" alt="Animal breeding example" onclick="openLightbox(this.src)">
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section id="contact">
-    <div class="contact-box">
-      <div>
-        <h2>Let's Connect</h2>
-        <p>Interested in working together or want to see more?<br>Reach out — I'd love to hear about your project.</p>
-      </div>
-      <div class="contact-links">
-        <a class="contact-link" href="/cdn-cgi/l/email-protection#0f6a63664f6a63667966756b6a7c666861216c6062">
-          ✉️ <span class="__cf_email__" data-cfemail="b2d7dedbf2d7dedbe4dbc8f6d7c1dbd5dc9cd1dddf">[email&#160;protected]</span>
-        </a>
-        <a class="contact-link" href="https://bio.site/elisendarius" target="_blank">
-          🌐 View my portfolio
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <footer>&copy; 2025 eliViz Design. All rights reserved.</footer>
-
-  <!-- Lightbox -->
-  <div id="lightbox">
-    <img id="lightbox-img" src="" alt="">
+<div class="topbar">
+  <div class="titles">
+    <h1 id="title">Breed × Trait Correlations</h1>
+    <p id="subtitle" class="subtitle">Genomic prediction accuracy across breeds — hover cells for details</p>
   </div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    function openLightbox(src) {
-      const lb = document.getElementById('lightbox');
-      document.getElementById('lightbox-img').src = src;
-      lb.style.display = 'flex';
-      lb.onc
+  <div class="lang" role="group" aria-label="Language toggle">
+    <button type="button" id="btn-en" class="active" data-lang="en">EN</button>
+    <button type="button" id="btn-sv" data-lang="sv">SV</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button type="button" class="tab active" data-key="bw" id="tab-bw">Birth Weight</button>
+  <button type="button" class="tab" data-key="ww" id="tab-ww">Weaning Weight</button>
+  <button type="button" class="tab" data-key="yw" id="tab-yw">Yearling Weight</button>
+  <button type="button" class="tab" data-key="adg" id="tab-adg">Daily Gain (ADG)</button>
+  <button type="button" class="tab" data-key="all" id="tab-all">All traits</button>
+</div>
+
+<div id="tooltip" class="tooltip" aria-hidden="true"></div>
+
+<div id="panel-bw" class="panel active"><div class="card" id="card-bw"></div></div>
+<div id="panel-ww" class="panel"><div class="card" id="card-ww"></div></div>
+<div id="panel-yw" class="panel"><div class="card" id="card-yw"></div></div>
+<div id="panel-adg" class="panel"><div class="card" id="card-adg"></div></div>
+<div id="panel-all" class="panel"><div class="card" id="card-all"></div></div>
+
+<!-- Legend -->
+<div class="legend" aria-label="Correlation legend">
+  <span class="legend-label">−1.0</span>
+  <div class="legend-bar" id="legend-bar"></div>
+  <span class="legend-label">+1.0</span>
+</div>
+<p class="source" id="source">n = number of animals per breed</p>
+
+<script>
+  // ===== i18n strings =====
+  const i18n = {
+    en: {
+      title: "Breed × Trait Correlations",
+      subtitle: "Genomic prediction accuracy across breeds — hover cells for details",
+      tabs: { bw:"Birth Weight", ww:"Weaning Weight", yw:"Yearling Weight", adg:"Daily Gain (ADG)", all:"All traits" },
+      table: { pair:"Correlation pair", n:"n =", rPrefix:"r = " },
+      source: "n = number of animals per breed",
+      tooltip: { breedLabel: "", pairLabel: "", rLabel: "r = " },
+      groups: {
+        bw: "Birth Weight",
+        ww: "Weaning Weight (200-day)",
+        yw: "Yearling Weight (365-day)",
+        adg:"Average Daily Gain"
+      },
+      rows: {
+        bw: [
+          "Igenity EBV ↔ fvD NAV",
+          "Igenity EBV ↔ Corrected BW",
+          "fvD NAV ↔ Corrected BW"
+        ],
+        ww: [
+          "Igenity EBV ↔ 200D NAV",
+          "Igenity EBV ↔ Corrected WW",
+          "200D NAV ↔ Corrected WW"
+        ],
+        yw: [
+          "Igenity EBV ↔ 365vD NAV",
+          "Igenity EBV ↔ Corrected YW",
+          "365vD NAV ↔ Corrected YW"
+        ],
+        adg: [
+          "Igenity EBV ↔ 365t NAV",
+          "Igenity EBV ↔ Corrected ADG",
+          "365t NAV ↔ Corrected ADG"
+        ]
+      }
+    },
+    sv: {
+      title: "Korrelationer mellan ras × egenskap",
+      subtitle: "Noggrannhet i genomisk prediktion mellan raser — hovra över celler för detaljer",
+      tabs: { bw:"Födelsevikt", ww:"Avvänjningsvikt", yw:"Årsvikt", adg:"Daglig tillväxt (ADG)", all:"Alla egenskaper" },
+      table: { pair:"Korrelationspar", n:"n =", rPrefix:"r = " },
+      source: "n = antal djur per ras",
+      tooltip: { breedLabel: "", pairLabel: "", rLabel: "r = " },
+      groups: {
+        bw: "Födelsevikt",
+        ww: "Avvänjningsvikt (200 dagar)",
+        yw: "Årsvikt (365 dagar)",
+        adg:"Genomsnittlig daglig tillväxt"
+      },
+      rows: {
+        bw: [
+          "Igenity EBV ↔ fvD NAV",
+          "Igenity EBV ↔ Korrigerad BW",
+          "fvD NAV ↔ Korrigerad BW"
+        ],
+        ww: [
+          "Igenity EBV ↔ 200D NAV",
+          "Igenity EBV ↔ Korrigerad WW",
+          "200D NAV ↔ Korrigerad WW"
+        ],
+        yw: [
+          "Igenity EBV ↔ 365vD NAV",
+          "Igenity EBV ↔ Korrigerad YW",
+          "365vD NAV ↔ Korrigerad YW"
+        ],
+        adg: [
+          "Igenity EBV ↔ 365t NAV",
+          "Igenity EBV ↔ Korrigerad ADG",
+          "365t NAV ↔ Korrigerad ADG"
+        ]
+      }
+    }
+  };
+
+  // ===== Data (language-independent) =====
+  const breeds = ['Angus','Blonde','Charolais','Hereford','Limousin','Simmental'];
+  const nMain  = [14,9,77,32,14,37];
+  const nSub   = [14,8,74,32,13,36];
+
+  const groups = {
+    bw: {
+      dot: '#3a7ea8',
+      n: nMain,
+      rows: [
+        { key:'bw', idx:0, vals:[0.07,0.52,0.06,0.58,0.31,0.34] },
+        { key:'bw', idx:1, vals:[0.20,0.32,0.00,-0.02,0.18,0.28] },
+        { key:'bw', idx:2, vals:[0.88,0.20,0.39,0.11,0.47,0.44] },
+      ]
+    },
+    ww: {
+      dot: '#3a8a65',
+      n: nMain,
+      rows: [
+        { key:'ww', idx:0, vals:[-0.07,0.08,0.00,0.28,0.45,0.07] },
+        { key:'ww', idx:1, vals:[0.42,-0.35,0.06,0.16,0.62,0.22] },
+        { key:'ww', idx:2, vals:[0.45,0.71,0.62,0.16,0.18,0.55] },
+      ]
+    },
+    yw: {
+      dot: '#c2526e',
+      n: nSub,
+      rows: [
+        { key:'yw', idx:0, vals:[-0.03,-0.19,0.00,0.53,0.23,0.02] },
+        { key:'yw', idx:1, vals:[0.61,-0.58,0.23,0.42,0.52,0.14] },
+        { key:'yw', idx:2, vals:[0.54,0.46,0.44,0.48,0.42,0.53] },
+      ]
+    },
+    adg: {
+      dot: '#7a3aaa',
+      n: nSub,
+      rows: [
+        { key:'adg', idx:0, vals:[-0.04,-0.62,-0.02,0.39,-0.14,0.21] },
+        { key:'adg', idx:1, vals:[0.20,0.53,0.18,0.35,-0.17,0.15] },
+        { key:'adg', idx:2, vals:[0.43,-0.01,0.18,0.54,0.53,0.35] },
+      ]
+    }
+  };
+
+  // ===== Rendering + behavior =====
+  let currentLang = 'en';
+
+  function lerpColor(a, b, t) {
+    const ah = parseInt(a.slice(1), 16), bh = parseInt(b.slice(1), 16);
+    const ar = ah >> 16, ag = (ah >> 8) & 0xff, ab = ah & 0xff;
+    const br = bh >> 16, bg = (bh >> 8) & 0xff, bb = bh & 0xff;
+    return `rgb(${Math.round(ar + (br - ar) * t)},${Math.round(ag + (bg - ag) * t)},${Math.round(ab + (bb - ab) * t)})`;
+  }
+
+  function corrColor(v) {
+    if (v === null || Number.isNaN(v)) return '#eee';
+    const clamp = Math.max(-1, Math.min(1, v));
+    const neutral = getComputedStyle(document.documentElement).getPropertyValue('--neutral').trim() || '#f0f1f3';
+    if (clamp < 0) return lerpColor(neutral, '#c2526e', -clamp);
+    return lerpColor(neutral, '#2d7a5c', clamp);
+  }
+
+  function textColor(v) {
+    if (v === null || Number.isNaN(v)) return '#999';
+    return Math.abs(v) > 0.45 ? 'white' : '#2a2d35';
+  }
+
+  function buildTable(key, data, container) {
+    const T = i18n[currentLang];
+    const groupLabel = T.groups[key];
+    const rowsText = T.rows[key];
+
+    const html = `
+      <div class="group-title">
+        <span class="dot" style="background:${data.dot}"></span>
+        ${groupLabel}
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>${T.table.pair}</th>
+            ${breeds.map(b => `<th>${b}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="n-row">
+            <td>${T.table.n}</td>
+            ${data.n.map(n => `<td>${n}</td>`).join('')}
+          </tr>
+          ${data.rows.map((row) => `
+            <tr>
+              <td>${rowsText[row.idx]}</td>
+              ${row.vals.map((v, i) => {
+                const bg = corrColor(v);
+                const tc = textColor(v);
+                const sign = v > 0 ? '+' : '';
+                const label = rowsText[row.idx];
+                return `<td class="cell"
+                  style="background:${bg}; color:${tc}"
+                  data-breed="${breeds[i]}"
+                  data-label="${label}"
+                  data-val="${v}"
+                >${sign}${Number(v).toFixed(2)}</td>`;
+              }).join('')}
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+    container.innerHTML = html;
+  }
+
+  function buildAll(container) {
+    container.innerHTML = '';
+    Object.keys(groups).forEach(key => {
+      const div = document.createElement('div');
+      div.style.marginBottom = '2rem';
+      buildTable(key, groups[key], div);
+      container.appendChild(div);
+    });
+  }
+
+  // Legend
+  function buildLegend() {
+    const bar = document.getElementById('legend-bar');
+    bar.innerHTML = '';
+    const steps = [-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75,1];
+    steps.forEach(v => {
+      const sw = document.createElement('div');
+      sw.className = 'legend-swatch';
+      sw.style.background = corrColor(v);
+      sw.style.color = textColor(v);
+      sw.textContent = v === 0 ? '0' : '';
+      bar.appendChild(sw);
+    });
+  }
+
+  // Tooltip (event delegation)
+  const tip = document.getElementById('tooltip');
+
+  function showTip(el, clientX, clientY) {
+    const T = i18n[currentLang];
+    tip.innerHTML = `<strong>${el.dataset.breed}</strong><br>${el.dataset.label}<br>${T.tooltip.rLabel}${el.dataset.val}`;
+    tip.classList.add('show');
+    tip.setAttribute('aria-hidden', 'false');
+    moveTip(clientX, clientY);
+  }
+
+  function moveTip(clientX, clientY) {
+    tip.style.left = (clientX + 14) + 'px';
+    tip.style.top  = (clientY - 36) + 'px';
+  }
+  function hideTip() {
+    tip.classList.remove('show');
+    tip.setAttribute('aria-hidden', 'true');
+  }
+
+  document.addEventListener('mousemove', (e) => {
+    if (tip.classList.contains('show')) moveTip(e.clientX, e.clientY);
+  });
+
+  document.addEventListener('mouseover', (e) => {
+    const cell = e.target.closest('.cell');
+    if (!cell) return;
+    showTip(cell, e.clientX, e.clientY);
+  });
+
+  document.addEventListener('mouseout', (e) => {
+    const fromCell = e.target.closest('.cell');
+    const toCell = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest('.cell') : null;
+    if (fromCell && !toCell) hideTip();
+  });
+
+  // Tabs
+  function showPanel(key) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(`panel-${key}`).classList.add('active');
+    document.querySelector(`.tab[data-key="${key}"]`).classList.add('active');
+    hideTip();
+  }
+
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => showPanel(btn.dataset.key));
+  });
+
+  // Language switching
+  function setLang(lang) {
+    currentLang = (lang === 'sv') ? 'sv' : 'en';
+
+    // Toggle buttons
+    document.getElementById('btn-en').classList.toggle('active', currentLang === 'en');
+    document.getElementById('btn-sv').classList.toggle('active', currentLang === 'sv');
+
+    // Update UI text
+    const T = i18n[currentLang];
+    document.getElementById('title').textContent = T.title;
+    document.getElementById('subtitle').textContent = T.subtitle;
+    document.getElementById('tab-bw').textContent = T.tabs.bw;
+    document.getElementById('tab-ww').textContent = T.tabs.ww;
+    document.getElementById('tab-yw').textContent = T.tabs.yw;
+    document.getElementById('tab-adg').textContent = T.tabs.adg;
+    document.getElementById('tab-all').textContent = T.tabs.all;
+    document.getElementById('source').textContent = T.source;
+
+    // Re-render tables so labels switch language
+    Object.keys(groups).forEach(key => buildTable(key, groups[key], document.getElementById(`card-${key}`)));
+    buildAll(document.getElementById('card-all'));
+    buildLegend();
+    hideTip();
+
+    // Update <html lang="">
+    document.documentElement.setAttribute('lang', currentLang);
+  }
+
+  document.getElementById('btn-en').addEventListener('click', () => setLang('en'));
+  document.getElementById('btn-sv').addEventListener('click', () => setLang('sv'));
+
+  // Initial render
+  Object.keys(groups).forEach(key => buildTable(key, groups[key], document.getElementById(`card-${key}`)));
+  buildAll(document.getElementById('card-all'));
+  buildLegend();
+  setLang('en');
+</script>
+
+</body>
+</html>
