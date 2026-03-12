@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Växa GårdOS — Unified Farm Interface</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:       #0f1a12;
+    --forest:    #1b3a22;
+    --pine:      #2c5f38;
+    --moss:      #4a8c5c;
+    --sage:      #8ab99a;
+    --mist:      #d6e8dc;
+    --cream:     #f5f0e8;
+    --amber:     #d4883a;
+    --amber-l:   #f0b96a;
+    --alert-r:   #c94040;
+    --alert-y:   #d4a630;
+    --alert-g:   #3a9b5c;
+    --card-bg:   #192c1f;
+    --card-brd:  #2a4a33;
+    --text-dim:  #7aaa8a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: .5;
+  }
+
+  /* ── TOP HEADER ── */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+    height: 64px;
+    background: var(--forest);
+    border-bottom: 1px solid var(--card-brd);
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .brand {
+    display: flex; align-items: center; gap: 14px;
+  }
+
+  .brand-logo {
+    width: 36px; height: 36px;
+    background: var(--amber);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--ink);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .brand-text {
+    display: flex; flex-direction: column; gap: 1px;
+  }
+
+  .brand-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--cream);
+    letter-spacing: .3px;
+  }
+
+  .brand-tag {
+    font-size: 10px;
+    color: var(--amber-l);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .farm-selector {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-brd);
+    border-radius: 8px;
+    padding: 7px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .farm-selector span { color: var(--text-dim); font-size: 11px; }
+
+  .header-right {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .alert-badge {
+    position: relative;
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-brd);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .alert-badge::after {
+    content: '3';
+    position: absolute;
+    top: -4px; right: -4px;
+    background: var(--alert-r);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 600;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--pine);
+    border: 2px solid var(--moss);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    color: var(--cream);
+    cursor: pointer;
+  }
+
+  /* ── POWERED BY BANNER ── */
+  .powered-banner {
+    background: linear-gradient(90deg, var(--pine) 0%, #1e4d2c 50%, var(--pine) 100%);
+    border-bottom: 1px solid var(--moss);
+    padding: 8px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px;
+    animation: bannerPulse 4s ease-in-out infinite;
+  }
+
+  @keyframes bannerPulse {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .powered-left {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--mist);
+    letter-spacing: .5px;
+  }
+
+  .powered-left strong {
+    color: var(--amber-l);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .powered-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--alert-g);
+    box-shadow: 0 0 8px var(--alert-g);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(.8)} }
+
+  .powered-right {
+    display: flex; align-items: center; gap: 16px;
+    color: var(--text-dim);
+  }
+
+  .powered-right span { display: flex; align-items: center; gap: 5px; }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr 280px;
+    min-height: calc(100vh - 100px);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    background: var(--forest);
+    border-right: 1px solid var(--card-brd);
+    padding: 24px 0;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .sidebar-section {
+    padding: 0 16px;
+    margin-bottom: 8px;
+  }
+
+  .sidebar-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 0 8px;
+    margin-bottom: 4px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--sage);
+    font-size: 13px;
+    font-weight: 400;
+    transition: all .15s;
+    position: relative;
+  }
+
+  .nav-item:hover { background: var(--card-bg); color: var(--cream); }
+
+  .nav-item.active {
+    background: var(--pine);
+    color: var(--cream);
+    font-weight: 500;
+  }
+
+  .nav-item.active::before {
+    content: '';
+    position: absolute; left: -16px; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 20px;
+    background: var(--amber);
+    border-radius: 0 3px 3px 0;
+  }
+
+  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--alert-r);
+    color: #fff;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+
+  .nav-badge.green { background: var(--alert-g); }
+  .nav-badge.yellow { background: var(--alert-y); color: var(--ink); }
+
+  .sidebar-divider {
+    height: 1px;
+    background: var(--card-brd);
+    margin: 8px 16px;
+  }
+
+  .vaxa-module {
+    margin: 0 16px;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--pine), var(--forest));
+    border: 1px solid var(--moss);
+    border-radius: 10px;
+    margin-top: auto;
+  }
+
+  .vaxa-module-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    color: var(--amber-l);
+    margin-bottom: 4px;
+  }
+
+  .vaxa-module-text {
+    font-size: 11px;
+    color: var(--sage);
+    line-height: 1.5;
+  }
+
+  .vaxa-module-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--amber);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  /* ── MAIN CONTENT ── */
+  main {
+    padding: 28px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+
+  .section-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+  }
+
+  /* ── KPI STRIP ── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+
+  .kpi-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-brd);
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: transform .2s, border-color .2s;
+    cursor: default;
+  }
+
+  .kpi-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--moss);
+  }
+
+  .kpi-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--amber);
+    opacity: 0;
+    transition: opacity .2s;
+  }
+
+  .kpi-card:hover::after { opacity: 1; }
+
+  .kpi-card.alert-card::after { background: var(--alert-r); opacity: 1; }
+  .kpi-card.good-card::after { background: var(--alert-g); opacity: 1; }
+
+  .kpi-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .kpi-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--cream);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .kpi-unit { font-size: 12px; color: var(--text-dim); }
+
+  .kpi-delta {
+    font-size: 11px;
+    display: flex; align-items: center; gap: 3px;
+    margin-top: 6px;
+  }
+
+  .kpi-delta.up { color: var(--alert-g); }
+  .kpi-delta.down { color: var(--alert-r); }
+
+  .kpi-source {
+    position: absolute;
+    bottom: 10px; right: 12px;
+    font-size: 9px;
+    color: var(--card-brd);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+
+  /* ── MODULE GRID ── */
+  .module-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .module-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-brd);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .module-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--card-brd);
+  }
+
+  .module-title-group {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .module-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  .module-icon.dairy   { background: rgba(74,140,92,.2); }
+  .module-icon.crop    { background: rgba(212,136,58,.2); }
+  .module-icon.vaxa    { background: rgba(100,160,220,.2); }
+  .module-icon.finance { background: rgba(180,120,200,.2); }
+
+  .module-title {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--cream);
+  }
+
+  .module-source {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+
+  .module-action-btn {
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid var(--card-brd);
+    color: var(--sage);
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .module-action-btn:hover { border-color: var(--moss); color: var(--cream); }
+
+  .module-body { padding: 16px 18px; }
+
+  /* COW ROWS */
+  .cow-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(42,74,51,.5);
+    font-size: 12px;
+  }
+  .cow-row:last-child { border: none; }
+
+  .cow-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    width: 50px;
+  }
+
+  .cow-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: var(--forest);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .cow-bar {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--moss);
+    transition: width .8s ease;
+  }
+
+  .cow-bar.high { background: var(--alert-g); }
+  .cow-bar.mid  { background: var(--amber); }
+  .cow-bar.low  { background: var(--alert-r); }
+
+  .cow-val {
+    font-weight: 600;
+    color: var(--cream);
+    width: 50px;
+    text-align: right;
+  }
+
+  .cow-status {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .cow-status.ok { background: var(--alert-g); }
+  .cow-status.warn { background: var(--alert-y); box-shadow: 0 0 6px var(--alert-y); }
+  .cow-status.crit { background: var(--alert-r); box-shadow: 0 0 6px var(--alert-r); animation: pulse 1.5s infinite; }
+
+  /* FIELD ROWS */
+  .field-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(42,74,51,.5);
+    font-size: 12px;
+  }
+  .field-row:last-child { border: none; }
+
+  .field-name { color: var(--cream); font-weight: 500; }
+  .field-crop  { color: var(--text-dim); font-size: 11px; }
+  .field-stage {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--forest);
+    border: 1px solid var(--card-brd);
+    color: var(--sage);
+  }
+
+  /* VAXA MINGÅRD */
+  .vaxa-items { display: flex; flex-direction: column; gap: 8px; }
+
+  .vaxa-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px;
+    background: var(--forest);
+    border-radius: 8px;
+    border: 1px solid var(--card-brd);
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+
+  .vaxa-item:hover { border-color: var(--moss); }
+
+  .vaxa-item-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    width: 28px;
+    text-align: center;
+  }
+
+  .vaxa-item-content { flex: 1; }
+  .vaxa-item-title { font-size: 12px; font-weight: 600; color: var(--cream); margin-bottom: 2px; }
+  .vaxa-item-sub   { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+
+  .vaxa-item-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--amber);
+    flex-shrink: 0;
+  }
+
+  /* FINANCE */
+  .finance-bars { display: flex; flex-direction: column; gap: 10px; }
+
+  .fin-row { display: flex; flex-direction: column; gap: 4px; }
+  .fin-label-row { display: flex; justify-content: space-between; font-size: 11px; }
+  .fin-label { color: var(--sage); }
+  .fin-value { color: var(--cream); font-weight: 500; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+  .fin-bar-wrap {
+    height: 5px;
+    background: var(--forest);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .fin-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width .8s ease;
+  }
+
+  /* ── RIGHT SIDEBAR (Alerts + Data Hub) ── */
+  .right-panel {
+    background: var(--forest);
+    border-left: 1px solid var(--card-brd);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  .panel-section {
+    padding: 20px;
+    border-bottom: 1px solid var(--card-brd);
+  }
+
+  .panel-section-title {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+  }
+
+  /* ALERTS */
+  .alert-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(42,74,51,.4);
+    cursor: pointer;
+    transition: padding-left .15s;
+  }
+
+  .alert-item:hover { padding-left: 4px; }
+  .alert-item:last-child { border: none; }
+
+  .alert-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+
+  .alert-dot.red    { background: var(--alert-r); box-shadow: 0 0 6px var(--alert-r); animation: pulse 2s infinite; }
+  .alert-dot.yellow { background: var(--alert-y); }
+  .alert-dot.green  { background: var(--alert-g); }
+
+  .alert-text { font-size: 12px; color: var(--cream); line-height: 1.4; }
+  .alert-meta {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    display: flex; gap: 8px;
+  }
+
+  .alert-source {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid var(--card-brd);
+    color: var(--text-dim);
+  }
+
+  /* DATA PERMISSIONS */
+  .perm-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(42,74,51,.4);
+    font-size: 12px;
+  }
+
+  .perm-row:last-child { border: none; }
+
+  .perm-partner { color: var(--cream); }
+  .perm-data { font-size: 10px; color: var(--text-dim); }
+
+  .perm-toggle {
+    width: 30px; height: 16px;
+    border-radius: 8px;
+    background: var(--pine);
+    border: 1px solid var(--moss);
+    position: relative;
+    cursor: pointer;
+    transition: background .2s;
+  }
+
+  .perm-toggle.on { background: var(--alert-g); border-color: var(--alert-g); }
+
+  .perm-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left .2s;
+  }
+
+  .perm-toggle.on::after { left: 16px; }
+
+  /* AGRONOD BLOCK */
+  .agronod-block {
+    padding: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-brd);
+    border-radius: 10px;
+    margin-top: 14px;
+  }
+
+  .agronod-title {
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .agronod-apis {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    margin-top: 8px;
+  }
+
+  .api-chip {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--forest);
+    border: 1px solid var(--card-brd);
+    color: var(--sage);
+  }
+
+  .api-chip.live {
+    border-color: var(--alert-g);
+    color: var(--alert-g);
+  }
+
+  /* VAXA FOOTER STRIPE */
+  footer {
+    background: var(--forest);
+    border-top: 1px solid var(--card-brd);
+    padding: 12px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .footer-brand {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    color: var(--amber-l);
+  }
+
+  .footer-brand span { color: var(--text-dim); font-family: 'DM Sans', sans-serif; font-size: 11px; }
+
+  /* ANIMATIONS */
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .kpi-card, .module-card {
+    animation: fadeSlideIn .4s ease both;
+  }
+
+  .kpi-card:nth-child(1) { animation-delay: .05s; }
+  .kpi-card:nth-child(2) { animation-delay: .1s; }
+  .kpi-card:nth-child(3) { animation-delay: .15s; }
+  .kpi-card:nth-child(4) { animation-delay: .2s; }
+  .kpi-card:nth-child(5) { animation-delay: .25s; }
+
+  .module-card:nth-child(1) { animation-delay: .3s; }
+  .module-card:nth-child(2) { animation-delay: .35s; }
+  .module-card:nth-child(3) { animation-delay: .4s; }
+  .module-card:nth-child(4) { animation-delay: .45s; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--ink); }
+  ::-webkit-scrollbar-thumb { background: var(--pine); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="brand">
+    <div class="brand-logo">V</div>
+    <div class="brand-text">
+      <div class="brand-name">Växa GårdOS</div>
+      <div class="brand-tag">Unified Farm Interface · Pilot v0.1</div>
+    </div>
+  </div>
+
+  <div class="farm-selector">
+    🌾 <strong>Björkgårdens Lantbruk AB</strong> &nbsp;<span>▾</span>
+  </div>
+
+  <div class="header-right">
+    <div class="alert-badge">🔔</div>
+    <div class="avatar">BO</div>
+  </div>
+</header>
+
+<!-- POWERED BY BANNER -->
+<div class="powered-banner">
+  <div class="powered-left">
+    <div class="powered-dot"></div>
+    Driven av <strong>Växa Sverige</strong> &nbsp;·&nbsp; Växa MinGård &nbsp;·&nbsp; Datautbyte via Agronod
+  </div>
+  <div class="powered-right">
+    <span>🔗 DeLaval API</span>
+    <span>🌿 Agricam API</span>
+    <span>🛡️ Lantmännen Försäkring</span>
+    <span>🏦 Landshypotek</span>
+    <span>🌍 Klimatkollen</span>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+
+  <!-- LEFT SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Översikt</div>
+      <div class="nav-item active"><span class="nav-icon">🏠</span> Dashboard</div>
+      <div class="nav-item"><span class="nav-icon">⚠️</span> Notiser <span class="nav-badge">3</span></div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Växa MinGård</div>
+      <div class="nav-item"><span class="nav-icon">🐄</span> Djurhälsa <span class="nav-badge green">OK</span></div>
+      <div class="nav-item"><span class="nav-icon">📋</span> Hälsoplan</div>
+      <div class="nav-item"><span class="nav-icon">💉</span> Avel & reproduktion</div>
+      <div class="nav-item"><span class="nav-icon">📊</span> Produktionsdata</div>
+      <div class="nav-item"><span class="nav-icon">👨‍🏫</span> Rådgivning</div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Anslutna tjänster</div>
+      <div class="nav-item"><span class="nav-icon">🤖</span> DeLaval <span class="nav-badge yellow">!</span></div>
+      <div class="nav-item"><span class="nav-icon">🛰️</span> Agricam</div>
+      <div class="nav-item"><span class="nav-icon">🛡️</span> Försäkring</div>
+      <div class="nav-item"><span class="nav-icon">🏦</span> Finans</div>
+      <div class="nav-item"><span class="nav-icon">🌱</span> Klimat &amp; hållbarhet</div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Data</div>
+      <div class="nav-item"><span class="nav-icon">🔐</span> Datahantering (Agronod)</div>
+      <div class="nav-item"><span class="nav-icon">⚙️</span> Inställningar</div>
+    </div>
+
+    <div style="flex:1"></div>
+
+    <div class="sidebar-section" style="margin-top:16px">
+      <div class="vaxa-module">
+        <div class="vaxa-module-title">Växa MinGård</div>
+        <div class="vaxa-module-text">Ditt rådgivningsunderlag, hälsoplaner och nyckeltal — alltid uppdaterade.</div>
+        <a class="vaxa-module-link" href="#">Öppna MinGård →</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <div>
+      <div class="section-title">God morgon, Bo 👋</div>
+      <div class="section-sub">Björkgårdens Lantbruk AB &nbsp;·&nbsp; Onsdag 12 mars 2026 &nbsp;·&nbsp; Senast synkad: 07:42</div>
+    </div>
+
+    <!-- KPI STRIP -->
+    <div class="kpi-strip">
+      <div class="kpi-card good-card">
+        <div class="kpi-label">Mjölk idag</div>
+        <div class="kpi-value">3 241 <span class="kpi-unit">kg</span></div>
+        <div class="kpi-delta up">▲ +4.2% vs igår</div>
+        <div class="kpi-source">DeLaval</div>
+      </div>
+      <div class="kpi-card alert-card">
+        <div class="kpi-label">Hälsovarningar</div>
+        <div class="kpi-value">2</div>
+        <div class="kpi-delta down">▼ Mastit risk · Ko #214</div>
+        <div class="kpi-source">DeLaval + Växa</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Foderförbrukning</div>
+        <div class="kpi-value">18.4 <span class="kpi-unit">ton</span></div>
+        <div class="kpi-delta up">▲ inom plan</div>
+        <div class="kpi-source">DeLaval</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">CO₂-ekvivalent</div>
+        <div class="kpi-value">1.12 <span class="kpi-unit">kg/kg</span></div>
+        <div class="kpi-delta up">▼ -3% vs mål</div>
+        <div class="kpi-source">Klimatkollen</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Kassaflöde</div>
+        <div class="kpi-value">+84k <span class="kpi-unit">kr</span></div>
+        <div class="kpi-delta up">▲ mars prognos</div>
+        <div class="kpi-source">Landshypotek</div>
+      </div>
+    </div>
+
+    <!-- MODULE GRID -->
+    <div class="module-grid">
+
+      <!-- DAIRY / DeLaval -->
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-title-group">
+            <div class="module-icon dairy">🐄</div>
+            <div>
+              <div class="module-title">Mjölkproduktion</div>
+              <div class="module-source">DeLaval · realtid</div>
+            </div>
+          </div>
+          <button class="module-action-btn">Öppna DeLaval →</button>
+        </div>
+        <div class="module-body">
+          <div class="cow-row">
+            <div class="cow-id">#112</div>
+            <div class="cow-bar-wrap"><div class="cow-bar high" style="width:88%"></div></div>
+            <div class="cow-val">38.2 L</div>
+            <div class="cow-status ok"></div>
+          </div>
+          <div class="cow-row">
+            <div class="cow-id">#214</div>
+            <div class="cow-bar-wrap"><div class="cow-bar low" style="width:41%"></div></div>
+            <div class="cow-val">17.8 L</div>
+            <div class="cow-status crit"></div>
+          </div>
+          <div class="cow-row">
+            <div class="cow-id">#307</div>
+            <div class="cow-bar-wrap"><div class="cow-bar mid" style="width:69%"></div></div>
+            <div class="cow-val">29.9 L</div>
+            <div class="cow-status warn"></div>
+          </div>
+          <div class="cow-row">
+            <div class="cow-id">#408</div>
+            <div class="cow-bar-wrap"><div class="cow-bar high" style="width:82%"></div></div>
+            <div class="cow-val">35.5 L</div>
+            <div class="cow-status ok"></div>
+          </div>
+          <div class="cow-row">
+            <div class="cow-id">#519</div>
+            <div class="cow-bar-wrap"><div class="cow-bar high" style="width:91%"></div></div>
+            <div class="cow-val">39.7 L</div>
+            <div class="cow-status ok"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CROP / Agricam -->
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-title-group">
+            <div class="module-icon crop">🌾</div>
+            <div>
+              <div class="module-title">Fält &amp; Grödor</div>
+              <div class="module-source">Agricam · satellitdata</div>
+            </div>
+          </div>
+          <button class="module-action-btn">Öppna Agricam →</button>
+        </div>
+        <div class="module-body">
+          <div class="field-row">
+            <div>
+              <div class="field-name">Storbäcksskiftet</div>
+              <div class="field-crop">Höstvete · 42 ha</div>
+            </div>
+            <div class="field-stage">Ax-gång</div>
+          </div>
+          <div class="field-row">
+            <div>
+              <div class="field-name">Lindbergets skifte</div>
+              <div class="field-crop">Korn · 28 ha</div>
+            </div>
+            <div class="field-stage">Bestockning</div>
+          </div>
+          <div class="field-row">
+            <div>
+              <div class="field-name">Mosseåkern</div>
+              <div class="field-crop">Vall · 18 ha</div>
+            </div>
+            <div class="field-stage">⚠ Gödsla inom 3d</div>
+          </div>
+          <div class="field-row">
+            <div>
+              <div class="field-name">Sandlyckan</div>
+              <div class="field-crop">Raps · 15 ha</div>
+            </div>
+            <div class="field-stage">Blomning</div>
+          </div>
+          <div class="field-row">
+            <div>
+              <div class="field-name">Norrhagen</div>
+              <div class="field-crop">Havre · 22 ha</div>
+            </div>
+            <div class="field-stage">Uppkomst</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VÄXA MINGÅRD -->
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-title-group">
+            <div class="module-icon vaxa">📋</div>
+            <div>
+              <div class="module-title">Växa MinGård</div>
+              <div class="module-source">Växa Sverige · rådgivning</div>
+            </div>
+          </div>
+          <button class="module-action-btn">Öppna MinGård →</button>
+        </div>
+        <div class="module-body">
+          <div class="vaxa-items">
+            <div class="vaxa-item">
+              <div class="vaxa-item-icon">🩺</div>
+              <div class="vaxa-item-content">
+                <div class="vaxa-item-title">Hälsoplan 2026 — uppdaterad</div>
+                <div class="vaxa-item-sub">Veterinär Sara L. har lämnat rekommendationer för Q2. 3 åtgärder väntar.</div>
+              </div>
+              <div class="vaxa-item-date">idag</div>
+            </div>
+            <div class="vaxa-item">
+              <div class="vaxa-item-icon">🧬</div>
+              <div class="vaxa-item-content">
+                <div class="vaxa-item-title">Semineringsresultat klara</div>
+                <div class="vaxa-item-sub">14 av 16 kor drägtig. Insamlat från DeLaval-data automatiskt.</div>
+              </div>
+              <div class="vaxa-item-date">igår</div>
+            </div>
+            <div class="vaxa-item">
+              <div class="vaxa-item-icon">📈</div>
+              <div class="vaxa-item-content">
+                <div class="vaxa-item-title">Kvartalsanalys — mjölkproduktion</div>
+                <div class="vaxa-item-sub">ECM 10 342 kg. +6% vs branschsnitt. Rådgivare kommenterat.</div>
+              </div>
+              <div class="vaxa-item-date">8 mar</div>
+            </div>
+            <div class="vaxa-item">
+              <div class="vaxa-item-icon">📅</div>
+              <div class="vaxa-item-content">
+                <div class="vaxa-item-title">Gårdsbesök planerat</div>
+                <div class="vaxa-item-sub">Rådgivare Jonas B. · 19 mars 09:00 · Fokus: kalvhälsa</div>
+              </div>
+              <div class="vaxa-item-date">19 mar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINANCE -->
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-title-group">
+            <div class="module-icon finance">💰</div>
+            <div>
+              <div class="module-title">Ekonomi &amp; Finans</div>
+              <div class="module-source">Landshypotek · LRF</div>
+            </div>
+          </div>
+          <button class="module-action-btn">Visa rapport →</button>
+        </div>
+        <div class="module-body">
+          <div class="finance-bars">
+            <div class="fin-row">
+              <div class="fin-label-row">
+                <span class="fin-label">Mjölkintäkter (mars)</span>
+                <span class="fin-value">+284 000 kr</span>
+              </div>
+              <div class="fin-bar-wrap">
+                <div class="fin-bar" style="width:78%; background:var(--alert-g)"></div>
+              </div>
+            </div>
+            <div class="fin-row">
+              <div class="fin-label-row">
+                <span class="fin-label">Foderkostnader</span>
+                <span class="fin-value">−142 000 kr</span>
+              </div>
+              <div class="fin-bar-wrap">
+                <div class="fin-bar" style="width:49%; background:var(--amber)"></div>
+              </div>
+            </div>
+            <div class="fin-row">
+              <div class="fin-label-row">
+                <span class="fin-label">EU-stöd (utbet. april)</span>
+                <span class="fin-value">+96 200 kr</span>
+              </div>
+              <div class="fin-bar-wrap">
+                <div class="fin-bar" style="width:33%; background:var(--sage)"></div>
+              </div>
+            </div>
+            <div class="fin-row">
+              <div class="fin-label-row">
+                <span class="fin-label">Lån (Landshypotek)</span>
+                <span class="fin-value">−38 400 kr/mån</span>
+              </div>
+              <div class="fin-bar-wrap">
+                <div class="fin-bar" style="width:13%; background:var(--alert-r)"></div>
+              </div>
+            </div>
+            <div class="fin-row">
+              <div class="fin-label-row">
+                <span class="fin-label">Hållbarhetspremie</span>
+                <span class="fin-value">+12 000 kr</span>
+              </div>
+              <div class="fin-bar-wrap">
+                <div class="fin-bar" style="width:4%; background:var(--moss)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- RIGHT PANEL -->
+  <aside class="right-panel">
+
+    <!-- ALERTS -->
+    <div class="panel-section">
+      <div class="panel-section-title">Aktiva notiser</div>
+
+      <div class="alert-item">
+        <div class="alert-dot red"></div>
+        <div>
+          <div class="alert-text">Ko #214 — mastit-risk (celltal ↑)</div>
+          <div class="alert-meta">
+            <span class="alert-source">DeLaval</span>
+            <span>07:31 idag</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-item">
+        <div class="alert-dot yellow"></div>
+        <div>
+          <div class="alert-text">Gödslingsfönster stängs om 3 dagar — Mosseåkern</div>
+          <div class="alert-meta">
+            <span class="alert-source">Agricam</span>
+            <span>06:00 idag</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-item">
+        <div class="alert-dot yellow"></div>
+        <div>
+          <div class="alert-text">Växa-rådgivare väntar svar på hälsoplan Q2</div>
+          <div class="alert-meta">
+            <span class="alert-source">Växa MinGård</span>
+            <span>igår</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-item">
+        <div class="alert-dot green"></div>
+        <div>
+          <div class="alert-text">Robot #2 — service slutförd ✓</div>
+          <div class="alert-meta">
+            <span class="alert-source">DeLaval</span>
+            <span>09 mar</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-item">
+        <div class="alert-dot yellow"></div>
+        <div>
+          <div class="alert-text">Försäkring — förnyelse om 30 dagar</div>
+          <div class="alert-meta">
+            <span class="alert-source">Lantmännen</span>
+            <span>08 mar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA PERMISSIONS -->
+    <div class="panel-section">
+      <div class="panel-section-title">Datatillstånd (Agronod)</div>
+
+      <div class="perm-row">
+        <div>
+          <div class="perm-partner">Lantmännen Försäkring</div>
+          <div class="perm-data">Djurhälsa, väder, avkastning</div>
+        </div>
+        <div class="perm-toggle on"></div>
+      </div>
+
+      <div class="perm-row">
+        <div>
+          <div class="perm-partner">Landshypotek</div>
+          <div class="perm-data">Klimatmått, mjölkvolym</div>
+        </div>
+        <div class="perm-toggle on"></div>
+      </div>
+
+      <div class="perm-row">
+        <div>
+          <div class="perm-partner">Klimatkollen / LRF</div>
+          <div class="perm-data">Metanutsläpp, kvävebalans</div>
+        </div>
+        <div class="perm-toggle on"></div>
+      </div>
+
+      <div class="perm-row">
+        <div>
+          <div class="perm-partner">Forskning (SLU)</div>
+          <div class="perm-data">Anonym produktionsdata</div>
+        </div>
+        <div class="perm-toggle"></div>
+      </div>
+
+      <div class="agronod-block">
+        <div class="agronod-title">
+          <span>⬡</span> Agronod — aktiva API:er
+        </div>
+        <div style="font-size:11px; color:var(--text-dim); line-height:1.5">
+          Du kontrollerar din data.<br>All delning är samtyckebaserad.
+        </div>
+        <div class="agronod-apis">
+          <span class="api-chip live">DeLaval ●</span>
+          <span class="api-chip live">Agricam ●</span>
+          <span class="api-chip live">Växa ●</span>
+          <span class="api-chip">Jordbruksverket</span>
+          <span class="api-chip live">Landshypotek ●</span>
+          <span class="api-chip">SLU</span>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    Växa GårdOS &nbsp;<span>— ett koncept utvecklat av Växa Sverige, i samarbete med Agronod-ekosystemet</span>
+  </div>
+  <div>Pilot v0.1 &nbsp;·&nbsp; Björkgårdens Lantbruk AB &nbsp;·&nbsp; Data ägs av lantbrukaren</div>
+</footer>
+
+<script>
+  // Simple interactivity: toggle data permissions
+  document.querySelectorAll('.perm-toggle').forEach(toggle => {
+    toggle.addEventListener('click', () => toggle.classList.toggle('on'));
+  });
+
+  // KPI cards: subtle shimmer on hover
+  document.querySelectorAll('.kpi-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      card.style.background = 'rgba(44,95,56,.35)';
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.background = '';
+    });
+  });
+
+  // Nav items
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+
+  // Animate bars on load
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.cow-bar, .fin-bar').forEach(bar => {
+      const target = bar.style.width;
+      bar.style.width = '0%';
+      setTimeout(() => { bar.style.width = target; }, 400);
+    });
+  });
+</script>
+</body>
+</html>
