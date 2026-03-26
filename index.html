@@ -1,376 +1,823 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>eliViz Projects, via Växa</title>
-  <meta name="description" content="A simple project hub hosted on GitHub Pages."/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAV vs NEOGEN – Genetisk Utvärdering</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1a3a2a;
+    --deep: #0d2118;
+    --cream: #f5f0e8;
+    --wheat: #e8dfc8;
+    --gold: #c8932a;
+    --amber: #e8a830;
+    --sage: #5a7a5a;
+    --muted: #7a8a78;
+    --white: #fefdfb;
+    --nav-blue: #1e4a6e;
+    --nav-light: #e8f0f8;
+    --neogen-red: #6e2020;
+    --neogen-light: #f8ece8;
+    --good: #2a6e3a;
+    --bad: #6e2020;
+    --neutral: #4a5a6e;
+  }
 
-  <style>
-    :root{
-      --grey:#f0f1f3;
-      --grey-mid:#d8dce2;
-      --grey-dark:#6b7280;
-      --blue:#ddeef7;
-      --blue-mid:#a8d0e6;
-      --blue-deep:#3a7ea8;
-      --green:#d9efe4;
-      --green-mid:#a3d4bc;
-      --pink:#fce8ec;
-      --pink-mid:#f5bfca;
-      --text:#2a2d35;
-      --text-light:#5a5f6e;
-      --white:#ffffff;
-      --radius:16px;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-      --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
-      --font-serif: ui-serif, "Georgia", "Times New Roman", Times, serif;
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--forest);
+    line-height: 1.7;
+  }
 
-      --shadow: 0 10px 34px rgba(0,0,0,0.08);
-      --shadow-soft: 0 2px 16px rgba(0,0,0,0.05);
-    }
+  /* HERO */
+  .hero {
+    background: var(--deep);
+    color: var(--cream);
+    padding: 80px 60px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,147,42,0.18) 0%, transparent 70%);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 20%;
+    width: 600px; height: 200px;
+    background: radial-gradient(ellipse, rgba(90,122,90,0.15) 0%, transparent 70%);
+  }
+  .hero-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.15;
+    max-width: 700px;
+    margin-bottom: 20px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--amber);
+  }
+  .hero-meta {
+    display: flex;
+    gap: 40px;
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(245,240,232,0.15);
+    flex-wrap: wrap;
+  }
+  .hero-meta-item { font-size: 13px; color: rgba(245,240,232,0.65); }
+  .hero-meta-item strong { display: block; color: var(--cream); font-size: 14px; margin-bottom: 2px; }
 
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{
-      font-family: var(--font-sans);
-      background:#f7f8fa;
-      color:var(--text);
-      overflow-x:hidden;
-      min-height: 100vh;
-    }
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
 
-    /* Sticky header */
-    header{
-      position:sticky; top:0; z-index:100;
-      background:rgba(247,248,250,.88);
-      backdrop-filter: blur(12px);
-      border-bottom:1px solid var(--grey-mid);
-      display:flex; align-items:center; justify-content:space-between;
-      padding: 1rem 1.5rem;
-      gap: 1rem;
-    }
-    .logo{
-      font-family: var(--font-serif);
-      font-size: 1.35rem;
-      letter-spacing: -0.4px;
-      white-space: nowrap;
-    }
-    .logo span{color:var(--blue-deep)}
-    nav{display:flex; gap:.4rem; flex-wrap: wrap;}
-    nav a{
-      color: var(--text-light);
-      text-decoration:none;
-      font-size:.92rem;
-      font-weight:600;
-      padding: .35rem .65rem;
-      border-radius: 999px;
-      transition: background .18s, color .18s;
-    }
-    nav a:hover{color:var(--blue-deep); background: var(--blue);}
+  section { padding: 70px 0; }
+  section + section { border-top: 1px solid rgba(26,58,42,0.1); }
 
-    /* Layout container: full-width feel but readable */
-    .wrap{
-      width: min(1100px, calc(100% - 3rem));
-      margin: 0 auto;
-    }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--forest);
+    margin-bottom: 8px;
+  }
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    display: block;
+  }
+  .section-intro {
+    font-size: 1.05rem;
+    color: var(--sage);
+    max-width: 680px;
+    margin-bottom: 40px;
+    line-height: 1.8;
+  }
 
-    /* Hero */
-    .hero{
-      padding: 3.2rem 0 1.8rem;
-      position:relative;
-      overflow:hidden;
-    }
-    .hero::before,.hero::after{
-      content:'';
-      position:absolute;
-      border-radius:50%;
-      filter: blur(85px);
-      opacity:.55;
-      pointer-events:none;
-      z-index:0;
-    }
-    .hero::before{
-      width: 560px; height: 560px;
-      background: radial-gradient(circle, var(--blue) 0%, transparent 70%);
-      top:-260px; left:-180px;
-    }
-    .hero::after{
-      width: 460px; height: 460px;
-      background: radial-gradient(circle, var(--pink) 0%, transparent 70%);
-      top:-140px; right:-180px;
-    }
-    .blob-green{
-      position:absolute;
-      width: 360px; height: 360px;
-      border-radius:50%;
-      background: radial-gradient(circle, var(--green) 0%, transparent 70%);
-      filter: blur(75px);
-      opacity:.45;
-      top: 40px; left: 35%;
-      pointer-events:none;
-      z-index:0;
-    }
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 32px;
+  }
+  .card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 32px;
+    border: 1px solid rgba(26,58,42,0.08);
+    box-shadow: 0 2px 20px rgba(13,33,24,0.06);
+  }
+  .card.nav { border-top: 3px solid var(--nav-blue); }
+  .card.neogen { border-top: 3px solid var(--neogen-red); }
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 14px;
+  }
+  .card.nav h3 { color: var(--nav-blue); }
+  .card.neogen h3 { color: var(--neogen-red); }
+  .card p { font-size: 0.92rem; color: #444; line-height: 1.75; }
 
-    .hero-inner{
-      position:relative;
-      z-index:1;
-      padding: 0.8rem 0 0;
-    }
+  /* PROS/CONS */
+  .pros-cons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-top: 32px;
+  }
+  .pros-cons-panel {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(13,33,24,0.06);
+  }
+  .panel-header {
+    padding: 20px 28px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .panel-header.nav-header { background: var(--nav-blue); }
+  .panel-header.neogen-header { background: var(--neogen-red); }
 
-    .pill{
-      display:inline-block;
-      background: var(--blue);
-      color: var(--blue-deep);
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: 1.1px;
-      text-transform: uppercase;
-      padding: .35rem 1rem;
-      border-radius: 999px;
-      margin-bottom: 1rem;
-    }
-    h1{
-      font-family: var(--font-serif);
-      font-size: clamp(2rem, 4.2vw, 3rem);
-      line-height:1.15;
-      letter-spacing: -0.5px;
-      margin-bottom: .85rem;
-    }
-    h1 em{font-style: italic; color: var(--blue-deep);}
-    .lead{
-      color: var(--text-light);
-      font-size: 1.05rem;
-      line-height: 1.7;
-      max-width: 70ch;
-      margin-bottom: 1.2rem;
-    }
+  .pros-list, .cons-list { padding: 20px 28px; }
+  .pros-list h4, .cons-list h4 {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .pros-list h4 { color: var(--good); }
+  .cons-list h4 { color: var(--bad); }
+  .cons-list { border-top: 1px solid rgba(0,0,0,0.06); }
 
-    .meta-line{
-      color: var(--text-light);
-      font-size: .92rem;
-      line-height: 1.6;
-      margin-top: .2rem;
-    }
-    .meta-line a{
-      color: var(--blue-deep);
-      text-decoration: none;
-      font-weight: 700;
-    }
-    .meta-line a:hover{ text-decoration: underline; }
+  .pros-list ul, .cons-list ul { list-style: none; }
+  .pros-list li, .cons-list li {
+    font-size: 0.88rem;
+    color: #444;
+    padding: 6px 0 6px 22px;
+    position: relative;
+    line-height: 1.5;
+    border-bottom: 1px dotted rgba(0,0,0,0.06);
+  }
+  .pros-list li:last-child, .cons-list li:last-child { border-bottom: none; }
+  .pros-list li::before {
+    content: '✓';
+    position: absolute; left: 0;
+    color: var(--good);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .cons-list li::before {
+    content: '✗';
+    position: absolute; left: 0;
+    color: var(--bad);
+    font-weight: 700;
+    font-size: 13px;
+  }
 
-    /* Projects section */
-    .section{
-      padding: 1.4rem 0 3.2rem;
-    }
-    .section-head{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
-    }
-    .section-title{
-      font-family: var(--font-serif);
-      font-size: 1.6rem;
-      letter-spacing: -0.3px;
-    }
+  /* HERITABILITY TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    margin-top: 32px;
+    border-radius: 12px;
+    box-shadow: 0 2px 20px rgba(13,33,24,0.08);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    font-size: 0.875rem;
+  }
+  thead tr {
+    background: var(--forest);
+    color: var(--cream);
+  }
+  thead th {
+    padding: 14px 18px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  tbody tr { border-bottom: 1px solid rgba(26,58,42,0.07); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody td {
+    padding: 12px 18px;
+    color: #333;
+  }
+  tbody tr:nth-child(even) { background: rgba(232,223,200,0.2); }
+  .h2-val { font-weight: 600; color: var(--forest); }
+  .max-val { color: var(--gold); font-weight: 600; }
 
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.1rem;
-    }
+  /* CORRELATION CHART */
+  .corr-section {
+    background: var(--deep);
+    color: var(--cream);
+    border-radius: 16px;
+    padding: 40px;
+    margin-top: 40px;
+  }
+  .corr-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    color: var(--amber);
+  }
+  .corr-section p { font-size: 0.9rem; color: rgba(245,240,232,0.7); margin-bottom: 28px; }
 
-    .proj{
-      background: var(--white);
-      border: 1px solid var(--grey-mid);
-      border-radius: var(--radius);
-      overflow:hidden;
-      box-shadow: var(--shadow-soft);
-      transition: transform .18s, box-shadow .18s;
-      display:flex;
-      flex-direction: column;
-    }
-    .proj:hover{
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
+  .corr-bars { display: flex; flex-direction: column; gap: 14px; }
+  .corr-row { display: flex; align-items: center; gap: 16px; }
+  .corr-label {
+    width: 180px;
+    font-size: 0.83rem;
+    color: var(--cream);
+    flex-shrink: 0;
+  }
+  .corr-bar-wrap {
+    flex: 1;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    height: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .corr-bar {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--deep);
+    min-width: 40px;
+    transition: width 1s ease;
+    position: relative;
+  }
+  .corr-bar.nav-bar { background: linear-gradient(90deg, #3a7ab0, #5a9ad0); }
+  .corr-bar.igenity-bar { background: linear-gradient(90deg, #b03a3a, #d05a5a); }
+  .corr-threshold {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background: var(--amber);
+    opacity: 0.8;
+  }
 
-    /* Default: thin gradient bar */
-    .proj-top{
-      height: 4px;
-      background: linear-gradient(90deg, var(--blue-mid), var(--pink-mid), var(--green-mid));
-    }
+  .corr-legend {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: rgba(245,240,232,0.75); }
+  .legend-dot { width: 12px; height: 12px; border-radius: 2px; }
+  .legend-dot.nav { background: #5a9ad0; }
+  .legend-dot.igenity { background: #d05a5a; }
+  .legend-dot.threshold { background: var(--amber); width: 2px; height: 16px; border-radius: 0; }
 
-    /* Media header (GIF/IMG preview) */
-    .proj-top.proj-media{
-      height: 180px;
-      background: none;
-    }
-    .proj-top.proj-media img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      display: block;
-    }
+  /* RACE CARDS */
+  .race-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .race-card {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 22px;
+    border: 1px solid rgba(26,58,42,0.08);
+    box-shadow: 0 2px 12px rgba(13,33,24,0.05);
+  }
+  .race-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+    color: var(--forest);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .race-badge {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+  .race-card p { font-size: 0.83rem; color: #555; line-height: 1.6; }
 
-    .proj-body{
-      padding: 1.1rem 1.1rem 1rem;
-      display:flex;
-      flex-direction: column;
-      gap:.65rem;
-      height:100%;
-    }
+  /* CONCLUSION BOX */
+  .conclusion {
+    background: var(--forest);
+    color: var(--cream);
+    border-radius: 16px;
+    padding: 50px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 60px;
+  }
+  .conclusion::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 240px;
+    color: rgba(200,147,42,0.12);
+    position: absolute;
+    top: -30px; left: 20px;
+    line-height: 1;
+  }
+  .conclusion h2 {
+    color: var(--amber);
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+  .conclusion p {
+    max-width: 780px;
+    font-size: 1.0rem;
+    line-height: 1.85;
+    color: rgba(245,240,232,0.88);
+    margin-bottom: 16px;
+  }
 
-    .proj h3{
-      font-size: 1.05rem;
-      font-weight: 900;
-      letter-spacing: -0.2px;
-    }
-    .proj p{
-      color: var(--text-light);
-      font-size: .92rem;
-      line-height: 1.6;
-    }
+  /* KEY MESSAGE PILLS */
+  .key-messages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 32px;
+  }
+  .key-pill {
+    background: rgba(200,147,42,0.18);
+    border: 1px solid rgba(200,147,42,0.35);
+    color: var(--amber);
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 0.83rem;
+    font-weight: 500;
+  }
 
-    .proj-actions{
-      margin-top: auto;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 1rem;
-      padding-top: .5rem;
-    }
-    .open{
-      display:inline-flex;
-      align-items:center;
-      gap:.55rem;
-      text-decoration:none;
-      font-weight: 900;
-      color: var(--blue-deep);
-      padding: .55rem .9rem;
-      border-radius: 999px;
-      background: var(--blue);
-      border: 1px solid var(--blue-mid);
-      transition: transform .15s, background .15s;
-      white-space: nowrap;
-    }
-    .open:hover{transform: translateY(-1px); background: #cfe6f3;}
+  /* CALLOUT */
+  .callout {
+    background: var(--wheat);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 10px 10px 0;
+    padding: 20px 24px;
+    margin: 28px 0;
+    font-size: 0.93rem;
+    color: var(--forest);
+    line-height: 1.7;
+  }
+  .callout strong { color: var(--gold); }
 
-    .path{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: .78rem;
-      color: var(--text-light);
-      background: var(--grey);
-      border: 1px solid var(--grey-mid);
-      padding: .2rem .45rem;
-      border-radius: 10px;
-      white-space: nowrap;
-    }
+  /* FORMULA BOX */
+  .formula-box {
+    background: var(--nav-light);
+    border: 1px solid rgba(30,74,110,0.2);
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin: 28px 0;
+    text-align: center;
+  }
+  .formula {
+    font-size: 1.4rem;
+    font-family: 'Playfair Display', serif;
+    color: var(--nav-blue);
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+  .formula-note { font-size: 0.85rem; color: var(--neutral); }
 
-    footer{
-      text-align:center;
-      padding: 2rem 1rem;
-      color: var(--text-light);
-      font-size: .86rem;
-      border-top: 1px solid var(--grey-mid);
-      background: rgba(255,255,255,0.35);
-    }
+  /* SCORE VISUAL */
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .score-card {
+    text-align: center;
+    background: var(--white);
+    border-radius: 10px;
+    padding: 24px 16px;
+    box-shadow: 0 2px 12px rgba(13,33,24,0.05);
+  }
+  .score-icon { font-size: 2rem; margin-bottom: 8px; }
+  .score-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .score-value { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--forest); }
 
-    @media (max-width: 680px){
-      header{padding: 1rem 1rem;}
-      .wrap{width: calc(100% - 2rem);}
-      .hero{padding-top: 2.6rem;}
-    }
-  </style>
+  /* NAV BULLET BOXES */
+  .highlight-box {
+    background: var(--nav-light);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-top: 28px;
+  }
+  .highlight-box h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--nav-blue);
+    margin-bottom: 14px;
+  }
+  .highlight-box ul { list-style: none; }
+  .highlight-box li {
+    font-size: 0.9rem;
+    color: #333;
+    padding: 5px 0 5px 20px;
+    position: relative;
+  }
+  .highlight-box li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--nav-blue);
+    font-weight: 600;
+  }
+
+  /* DIVIDER */
+  .ornament {
+    text-align: center;
+    color: var(--gold);
+    font-size: 1.2rem;
+    letter-spacing: 12px;
+    padding: 20px 0;
+    opacity: 0.5;
+  }
+
+  footer {
+    background: var(--deep);
+    color: rgba(245,240,232,0.5);
+    text-align: center;
+    padding: 30px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 768px) {
+    .card-grid, .pros-cons-grid, .race-grid, .score-grid { grid-template-columns: 1fr; }
+    .hero { padding: 50px 24px 40px; }
+    .container { padding: 0 20px; }
+    section { padding: 50px 0; }
+    .conclusion { padding: 32px 24px; }
+    .corr-label { width: 130px; font-size: 0.75rem; }
+  }
+</style>
 </head>
-
 <body>
-  <header>
-    <div class="logo">eli<span>Viz</span> Projects</div>
-    <nav>
-      <a href="#projects">Projects</a>
-    </nav>
-  </header>
 
-  <section class="hero">
-    <div class="blob-green"></div>
-    <div class="wrap hero-inner">
-      <div class="pill">Science x Data x Design</div>
-      <h1>Interactive data visualisations, <em>turning complex data into clear, actionable insight.</em></h1>
-      <p class="lead">
-        A repository for data-driven visualisation. Click a project to open the interactive page.
-      </p>
-      <p class="meta-line">
-        This site is hosted on GitHub and served via GitHub Pages, for Växas farm data and the intelectual property.
-      </p>
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-label">Genetisk Utvärdering · Nordisk Nötköttsproduktion</div>
+    <h1>NAV vs <em>NEOGEN</em> — Vilket verktyg väljer du?</h1>
+    <p style="max-width:600px; color: rgba(245,240,232,0.75); font-size:1rem; margin-top: 16px;">
+      En lantbruksanpassad genomgång av nordisk avelsvärdering, kommersiell genomisk testning och hur du väljer rätt selektionsverktyg för din besättning.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><strong>Elisenda Rius-Vilarrasa</strong>K&U Avel, Växa</div>
+      <div class="hero-meta-item"><strong>Louise Ryberg & Sara Wiklert Petersson</strong>Genetisk Utvärdering</div>
+      <div class="hero-meta-item"><strong>2025-05-14</strong>Publiceringsdatum</div>
     </div>
-  </section>
+  </div>
+</div>
 
-  <section id="projects" class="section">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="section-title">Projects</div>
+<!-- BAKGRUND -->
+<section>
+  <div class="container">
+    <span class="section-label">Bakgrund</span>
+    <h2>Vad är NEOGEN?</h2>
+    <p class="section-intro">NEOGEN är en global leverantör av genomiska tjänster med DNA-testning och genomiska utvärderingar för en rad produktionsegenskaper.</p>
+
+    <div class="score-grid">
+      <div class="score-card">
+        <div class="score-icon">🌍</div>
+        <div class="score-label">Räckvidd</div>
+        <div class="score-value" style="font-size:1.1rem;">Global</div>
       </div>
-
-      <div class="grid">
-
-        <!-- Project1: Igenity -->
-        <article class="proj">
-          <div class="proj-top"></div>
-          <div class="proj-body">
-            <h3>Igenity vs. NAV breeding values — a comparison</h3>
-            <p>
-              Correlation heatmaps across breeds and traits, with tooltips and a bilingual context toggle (EN/SV).
-            </p>
-            <div class="proj-actions">
-              <a class="open" href="igenity/">Open →</a>
-              <span class="path">igenity/</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- Project2: vis (with GIF preview) -->
-       <article class="proj">
-          <div class="proj-top"></div>
-          <div class="proj-body">
-            <h3>Igenity vs. NAV Breeding goal — an illustrative simulation</h3>
-            <p>
-              Simulated genetic progress towards breeding goal of NAV vs Igenity.
-            </p>
-            <div class="proj-actions">
-              <a class="open" href="vis/">Open →</a>
-              <span class="path">vis/</span>
-            </div>
-          </div>
-        </article>
-
-                <!-- Project3: Innovation Växa Gård -->
-        <article class="proj">
-          <div class="proj-top"></div>
-          <div class="proj-body">
-            <h3>Digital farm control tower</h3>
-            <p>
-              Växas unified Farm Interface - where the farmer interacts with everything through one control interface.
-            </p>
-            <div class="proj-actions">
-              <a class="open" href="innovation/">Open →</a>
-              <span class="path">innovation/</span>
-            </div>
-          </div>
-        </article>
-
-
-
-        
-        
+      <div class="score-card">
+        <div class="score-icon">⚡</div>
+        <div class="score-label">Svarstid</div>
+        <div class="score-value" style="font-size:1.1rem;">Veckor</div>
+      </div>
+      <div class="score-card">
+        <div class="score-icon">🐄</div>
+        <div class="score-label">Raser</div>
+        <div class="score-value" style="font-size:1.1rem;">Angus+</div>
+      </div>
+      <div class="score-card">
+        <div class="score-icon">🌐</div>
+        <div class="score-label">Referens</div>
+        <div class="score-value" style="font-size:1.1rem;">NA & AU</div>
       </div>
     </div>
-  </section>
 
-  <footer>© 2026 eliViz Design</footer>
+    <div class="callout">
+      <strong>Viktigt att notera:</strong> NEOGEN:s utvärderingar är <em>inte</em> officiella nationella utvärderingar – de är kommersiella förutsägelser. Precisionen beror på hur väl testade djur matchar den referenspopulation som används för att bygga de genomiska modellerna – primärt baserad på data från Nordamerika och Australien.
+    </div>
+
+    <div class="card-grid">
+      <div class="card nav">
+        <h3>NAV – Nordisk Officiell Utvärdering</h3>
+        <p>NAV (Nordic Cattle Genetic Evaluation) är den officiella genomiska utvärderingen för renrasigt nötkött i Norden. Den baseras på fenotypdata, stamtavledata och genotyper från hela den nordiska populationen, med rasspecifika modeller utvecklade under nordiska förhållanden.</p>
+        <div class="highlight-box" style="margin-top:20px;">
+          <h4>NAV bygger på</h4>
+          <ul>
+            <li>Omfattande nationella data från hela Norden</li>
+            <li>Rasspecifika modeller för nordiska miljöer</li>
+            <li>Regelbundna utvärderingar med kvalitetskontroll</li>
+            <li>Balanserade index i samarbete med lantbrukare</li>
+            <li>Officiellt erkänt för AI-avelshingstar & stambokföring</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card neogen">
+        <h3>NEOGEN – Kommersiell Genomisk Tjänst</h3>
+        <p>NEOGEN erbjuder snabba, rasspecifika genomiska resultat för egenskaper som tillväxt, fodereffektivitet, fertilitet, slaktkroppskvalitet och sjukdomsresistens. Tjänsten är särskilt användbar för kommersiella korsningsdjur och tidig selektion på gården.</p>
+        <div style="background: var(--neogen-light); border-radius: 10px; padding: 20px; margin-top: 20px;">
+          <h4 style="font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--neogen-red); margin-bottom: 12px;">NEOGEN fokuserar på</h4>
+          <ul style="list-style: none;">
+            <li style="font-size:0.88rem; padding: 4px 0 4px 18px; position:relative; color:#444;" ><span style="position:absolute;left:0;color:var(--neogen-red);">→</span>Snabba insikter om unga djur</li>
+            <li style="font-size:0.88rem; padding: 4px 0 4px 18px; position:relative; color:#444;"><span style="position:absolute;left:0;color:var(--neogen-red);">→</span>Korsningsdjur och kommersiell produktion</li>
+            <li style="font-size:0.88rem; padding: 4px 0 4px 18px; position:relative; color:#444;"><span style="position:absolute;left:0;color:var(--neogen-red);">→</span>Egenskaper ej ännu i NAV</li>
+            <li style="font-size:0.88rem; padding: 4px 0 4px 18px; position:relative; color:#444;"><span style="position:absolute;left:0;color:var(--neogen-red);">→</span>Beslutsstöd på gårdsnivå</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROS CONS -->
+<section>
+  <div class="container">
+    <span class="section-label">Jämförelse</span>
+    <h2>Fördelar & Nackdelar</h2>
+    <p class="section-intro">Båda systemen har sin plats – nyckeln är att förstå vad varje verktyg kan och inte kan leverera i just din produktion.</p>
+
+    <div class="pros-cons-grid">
+      <div class="pros-cons-panel">
+        <div class="panel-header nav-header">🔵 NAV – Officiell nordisk utvärdering</div>
+        <div class="pros-list">
+          <h4>Fördelar</h4>
+          <ul>
+            <li>Hög träffsäkerhet för nordiska raser</li>
+            <li>I linje med nationella avelsmål</li>
+            <li>Konsekventa, peer-reviewed metoder</li>
+            <li>Stödjer långsiktig genetisk förbättring</li>
+            <li>Officiellt erkänt för stamboks- och AI-ändamål</li>
+          </ul>
+        </div>
+        <div class="cons-list">
+          <h4>Nackdelar</h4>
+          <ul>
+            <li>Kan vara långsammare och mindre flexibel</li>
+            <li>Ingen utvärdering för korsningsdjur (ännu)</li>
+            <li>Saknar genomiska avelsvärden för fodereffektivitet, fertilitet och sjukdomsresistens</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pros-cons-panel">
+        <div class="panel-header neogen-header">🔴 NEOGEN – Kommersiell genomisk tjänst</div>
+        <div class="pros-list">
+          <h4>Fördelar</h4>
+          <ul>
+            <li>Snabba, tillgängliga resultat (veckor)</li>
+            <li>Rasspecifika utvärderingar</li>
+            <li>Användbart för korsningsdjur</li>
+            <li>Perfekt för tidigt urval och gårdsbeslut</li>
+          </ul>
+        </div>
+        <div class="cons-list">
+          <h4>Nackdelar</h4>
+          <ul>
+            <li>Lägre precision om referenspopulationen inte matchar</li>
+            <li>Ingen integration med nordiska databaser</li>
+            <li>Saknar officiellt erkännande för stambokföring</li>
+            <li>Svårare att följa långsiktiga genetiska trender</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GENETISK TEORI -->
+<section>
+  <div class="container">
+    <span class="section-label">Vetenskaplig Grund</span>
+    <h2>Teoretisk Genetisk Referensram</h2>
+    <p class="section-intro">Sambandet mellan fenotyp och avelsvärde styrs av heritabiliteten. Det sätter den teoretiska maxnivån för hur träffsäker en genetisk prediktion kan bli.</p>
+
+    <div class="formula-box">
+      <div class="formula">corr(P, A) = √h²</div>
+      <div class="formula-note">Teoretiskt maximalt samband mellan fenotyp (P) och sann genetisk merit (A), given heritabilitet h²</div>
+    </div>
+
+    <div class="callout">
+      <strong>Tolkning:</strong> En heritabilitet på h² = 0,36 innebär att den maximalt möjliga korrelationen mellan avelsvärde och observerad prestation är √0,36 = <strong>0,60</strong>. Värden nära detta tak tyder på att avelsvärdet fungerar väl.
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Egenskap</th>
+            <th>Continental (CHA) h²</th>
+            <th>Max (√h²)</th>
+            <th>British (HER) h²</th>
+            <th>Max (√h²)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Födelsevikt</td><td class="h2-val">0,38</td><td class="max-val">0,62</td><td class="h2-val">0,47</td><td class="max-val">0,69</td></tr>
+          <tr><td>Tillväxt till avvänjning</td><td class="h2-val">0,17</td><td class="max-val">0,41</td><td class="h2-val">0,15</td><td class="max-val">0,39</td></tr>
+          <tr><td>Ettårsvikt</td><td class="h2-val">0,31</td><td class="max-val">0,56</td><td class="h2-val">0,29</td><td class="max-val">0,54</td></tr>
+          <tr><td>Daglig tillväxt, avv–slakt</td><td class="h2-val">0,20</td><td class="max-val">0,45</td><td class="h2-val">0,20</td><td class="max-val">0,45</td></tr>
+          <tr><td>Daglig tillväxt, slakt</td><td class="h2-val">0,36</td><td class="max-val">0,60</td><td class="h2-val">0,46</td><td class="max-val">0,68</td></tr>
+          <tr><td>Slaktkroppspoäng</td><td class="h2-val">0,31</td><td class="max-val">0,55</td><td class="h2-val">0,28</td><td class="max-val">0,53</td></tr>
+          <tr><td>Fettpoäng</td><td class="h2-val">0,34</td><td class="max-val">0,59</td><td class="h2-val">0,30</td><td class="max-val">0,55</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CORRELATION VISUALIZATION -->
+<section>
+  <div class="container">
+    <span class="section-label">Utvärderingsresultat</span>
+    <h2>Sammanfattning av Korrelationer</h2>
+    <p class="section-intro">NAV-(G)EBV uppvisar förväntat beteende relativt heritabilitet. Igenity-score saknar konsekvent relation till genetisk merit över raser.</p>
+
+    <div class="corr-section">
+      <h3>Korrelationsnivåer: NAV-(G)EBV vs Igenity</h3>
+      <p>Korrelationer under 0,80 indikerar att värderingarna inte beskriver samma genetiska signal. Guldlinjen markerar denna tröskel.</p>
+
+      <div class="corr-legend">
+        <div class="legend-item"><div class="legend-dot nav"></div> NAV (G)EBV vs Fenotyp</div>
+        <div class="legend-item"><div class="legend-dot igenity"></div> Igenity vs NAV / Fenotyp</div>
+        <div class="legend-item"><div class="legend-dot threshold"></div> Tröskel 0,80</div>
+      </div>
+
+      <div class="corr-bars">
+        <div class="corr-row">
+          <div class="corr-label">Födelsevikt – NAV</div>
+          <div class="corr-bar-wrap">
+            <div class="corr-bar nav-bar" style="width:68%">~0,55</div>
+            <div class="corr-threshold" style="left:80%"></div>
+          </div>
+        </div>
+        <div class="corr-row">
+          <div class="corr-label">Födelsevikt – Igenity</div>
+          <div class="corr-bar-wrap">
+            <div class="corr-bar igenity-bar" style="width:25%">Svag</div>
+            <div class="corr-threshold" style="left:80%"></div>
+          </div>
+        </div>
+        <div class="corr-row">
+          <div class="corr-label">200-dagars vikt – NAV</div>
+          <div class="corr-bar-wrap">
+            <div class="corr-bar nav-bar" style="width:52%">Måttlig</div>
+            <div class="corr-threshold" style="left:80%"></div>
+          </div>
+        </div>
+        <div class="corr-row">
+          <div class="corr-label">200-dagars vikt – Igenity</div>
+          <div class="corr-bar-wrap">
+            <div class="corr-bar igenity-bar" style="width:18%">Svag</div>
+            <div class="corr-threshold" style="left:80%"></div>
+          </div>
+        </div>
+        <div class="corr-row">
+          <div class="corr-label">365-dagars vikt – NAV</div>
+          <div class="corr-bar-wrap">
+            <div class="corr-bar nav-bar" style="width:57%">Måttlig</div>
+            <div class="corr-threshold" style="left:80%"></div>
+          </div>
+        </div>
+        <div class="corr-row">
+          <div class="corr-label">365-dagars vikt – Igenity</div>
+          <div class="corr-bar-wrap">
+            <div class="corr-bar igenity-bar" style="width:12%">Inkonsekvent</div>
+            <div class="corr-threshold" style="left:80%"></div>
+          </div>
+        </div>
+        <div class="corr-row">
+          <div class="corr-label">Slaktkroppspoäng – NAV</div>
+          <div class="corr-bar-wrap">
+            <div class="corr-bar nav-bar" style="width:60%">~0,50</div>
+            <div class="corr-threshold" style="left:80%"></div>
+          </div>
+        </div>
+        <div class="corr-row">
+          <div class="corr-label">Slaktkroppspoäng – Igenity</div>
+          <div class="corr-bar-wrap">
+            <div class="corr-bar igenity-bar" style="width:8%">≈ 0</div>
+            <div class="corr-threshold" style="left:80%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RACE BREAKDOWN -->
+<section>
+  <div class="container">
+    <span class="section-label">Rasvis Analys</span>
+    <h2>Resultat per Ras</h2>
+    <p class="section-intro">Samband mellan Igenity och NAV varierar kraftigt mellan raser. Här är de övergripande mönstren sammanfattade.</p>
+
+    <div class="race-grid">
+      <div class="race-card">
+        <h4><span class="race-badge" style="background:#8B4513"></span>Angus</h4>
+        <p>NAV följer fenotyp stabilt. Igenity visar viss fenotypkoppling men svag koppling till NAV. Relativt bäst prestanda av de studerade raserna.</p>
+      </div>
+      <div class="race-card">
+        <h4><span class="race-badge" style="background:#DAA520"></span>Blonde d'Aquitaine</h4>
+        <p>Instabila Igenity-samband, inklusive negativa korrelationer för vissa egenskaper. NAV behåller sin förväntade biologiska koppling.</p>
+      </div>
+      <div class="race-card">
+        <h4><span class="race-badge" style="background:#708090"></span>Charolais</h4>
+        <p>NAV uppvisar måttlig koppling till fenotyp. Igenity svag. Diskrepansen är tydligast för tillväxtegenskaper.</p>
+      </div>
+      <div class="race-card">
+        <h4><span class="race-badge" style="background:#8B6914"></span>Hereford</h4>
+        <p>Relativt stark överensstämmelse mellan Igenity och NAV jämfört med övriga raser. En av de mer stabila raserna i studien.</p>
+      </div>
+      <div class="race-card">
+        <h4><span class="race-badge" style="background:#B22222"></span>Limousin</h4>
+        <p>Tydliga positiva samband mellan Igenity och fenotyp för vissa egenskaper. Igenity visar här relativt bättre koppling.</p>
+      </div>
+      <div class="race-card">
+        <h4><span class="race-badge" style="background:#4A7C59"></span>Simmental</h4>
+        <p>NAV stabil och konsekvent. Igenity svag till måttlig med inkonsekvent beteende. Tydliga variationer mellan egenskaper.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+<div class="container">
+  <div class="conclusion">
+    <h2>Slutsats</h2>
+    <p>
+      NAV-(G)EBV uppvisar förväntat beteende relativt heritabilitet och etablerar en tydlig biologisk referensnivå. Igenity-score saknar däremot konsekvent genetisk eller fenotypisk överensstämmelse över raser och egenskaper — resultaten tyder på att Igenity inte generellt reproducerar den genetiska rangordning som NAV uppvisar.
+    </p>
+    <p>
+      <strong style="color: var(--amber);">NEOGEN kan vara ett användbart komplement</strong> för beslutsfattande och tidigt urval, särskilt för korsningsdjur eller egenskaper ännu inte i NAV. Men för populationsövergripande avelsstrategier och långsiktig genetisk förbättring under nordiska förhållanden är NAV:s officiella utvärderingar fortfarande det ändamålsenliga verktyget.
+    </p>
+    <p>
+      Eftersom en producent bör välja det verktyg som bäst speglar hur man faktiskt får betalt för sin produktion under nordiska förhållanden, är NAV-avelsvärden den gyllene standarden — med tålamod som nyckelingrediens i ett långsiktigt avelsarbete.
+    </p>
+
+    <div class="key-messages">
+      <div class="key-pill">📊 NAV = Nordisk standard</div>
+      <div class="key-pill">⚡ NEOGEN = Snabb insikt</div>
+      <div class="key-pill">🔬 Olika verktyg, olika syfte</div>
+      <div class="key-pill">🌱 Långsiktighet kräver NAV</div>
+      <div class="key-pill">🤝 Komplement, inte konkurrenter</div>
+    </div>
+  </div>
+</div>
+
+<div class="ornament" style="padding: 40px 0;">· · ·</div>
+
+<footer>
+  Elisenda Rius-Vilarrasa, Louise Ryberg & Sara Wiklert Petersson · K&U Avel, Växa · 2025 · NAV Genetisk Utvärdering
+</footer>
+
 </body>
 </html>
